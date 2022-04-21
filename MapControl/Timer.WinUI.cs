@@ -2,11 +2,11 @@
 // © 2022 Clemens Fischer
 // Licensed under the Microsoft Public License (Ms-PL)
 
+using System;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using System;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     internal static class Timer
     {

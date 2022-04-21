@@ -4,7 +4,7 @@
 
 using System;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Auto-Equirectangular Projection - AUTO2:42004.

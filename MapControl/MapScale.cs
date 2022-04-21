@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Draws a map scale overlay.

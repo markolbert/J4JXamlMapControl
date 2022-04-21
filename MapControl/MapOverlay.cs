@@ -2,15 +2,15 @@
 // © 2022 Clemens Fischer
 // Licensed under the Microsoft Public License (Ms-PL)
 
-using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
+using Microsoft.UI.Xaml.Media;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Base class for map overlays with background, foreground, stroke and font properties.
     /// </summary>
-    public partial class MapOverlay : MapPanel
+    public partial class MapOverlay : J4JSoftware.XamlMapControl.MapPanel
     {
         public FontFamily FontFamily
         {

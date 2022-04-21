@@ -10,7 +10,7 @@ using Windows.Storage.Streams;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public static partial class ImageLoader
     {

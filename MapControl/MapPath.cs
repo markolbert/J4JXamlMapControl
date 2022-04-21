@@ -5,7 +5,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// A path element with a Data property that holds a Geometry in view coordinates or
@@ -60,7 +60,7 @@ namespace MapControl
 
         protected virtual void UpdateData()
         {
-            MapPanel.SetLocation(this, Location);
+            J4JSoftware.XamlMapControl.MapPanel.SetLocation(this, Location);
 
             if (parentMap != null && Data != null && Location != null)
             {

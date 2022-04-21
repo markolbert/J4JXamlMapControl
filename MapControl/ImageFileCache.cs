@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MapControl.Caching
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Image Cache implementation based on local image files.

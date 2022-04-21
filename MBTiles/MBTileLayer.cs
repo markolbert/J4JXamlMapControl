@@ -3,6 +3,7 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using System.Threading.Tasks;
+using J4JSoftware.XamlMapControl;
 using Microsoft.UI.Xaml;
 
 namespace MapControl.MBTiles

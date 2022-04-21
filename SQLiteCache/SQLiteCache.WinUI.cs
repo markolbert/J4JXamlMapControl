@@ -5,6 +5,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using J4JSoftware.XamlMapControl.Caching;
 
 namespace MapControl.Caching
 {

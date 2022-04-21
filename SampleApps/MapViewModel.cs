@@ -1,5 +1,6 @@
 ﻿using MapControl;
 using System.Collections.Generic;
+using J4JSoftware.XamlMapControl;
 
 namespace SampleApplication
 {

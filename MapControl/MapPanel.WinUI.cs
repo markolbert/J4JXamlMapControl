@@ -5,23 +5,23 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public partial class MapPanel
     {
         public static readonly DependencyProperty LocationProperty = DependencyProperty.RegisterAttached(
-            "Location", typeof(Location), typeof(MapPanel),
-            new PropertyMetadata(null, (o, e) => (((FrameworkElement)o).Parent as MapPanel)?.InvalidateArrange()));
+            "Location", typeof(Location), typeof(J4JSoftware.XamlMapControl.MapPanel),
+            new PropertyMetadata(null, (o, e) => (((FrameworkElement)o).Parent as J4JSoftware.XamlMapControl.MapPanel)?.InvalidateArrange()));
 
         public static readonly DependencyProperty BoundingBoxProperty = DependencyProperty.RegisterAttached(
-            "BoundingBox", typeof(BoundingBox), typeof(MapPanel),
-            new PropertyMetadata(null, (o, e) => (((FrameworkElement)o).Parent as MapPanel)?.InvalidateArrange()));
+            "BoundingBox", typeof(BoundingBox), typeof(J4JSoftware.XamlMapControl.MapPanel),
+            new PropertyMetadata(null, (o, e) => (((FrameworkElement)o).Parent as J4JSoftware.XamlMapControl.MapPanel)?.InvalidateArrange()));
 
         public static readonly DependencyProperty ParentMapProperty = DependencyProperty.RegisterAttached(
-            "ParentMap", typeof(MapBase), typeof(MapPanel), new PropertyMetadata(null, ParentMapPropertyChanged));
+            "ParentMap", typeof(MapBase), typeof(J4JSoftware.XamlMapControl.MapPanel), new PropertyMetadata(null, ParentMapPropertyChanged));
 
         private static readonly DependencyProperty ViewPositionProperty = DependencyProperty.RegisterAttached(
-            "ViewPosition", typeof(Point?), typeof(MapPanel), new PropertyMetadata(null));
+            "ViewPosition", typeof(Point?), typeof(J4JSoftware.XamlMapControl.MapPanel), new PropertyMetadata(null));
 
         public MapPanel()
         {

@@ -4,6 +4,7 @@
 
 using ProjNet.CoordinateSystems;
 using System.Windows;
+using J4JSoftware.XamlMapControl;
 
 namespace MapControl.Projections
 {

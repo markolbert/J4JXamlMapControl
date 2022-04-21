@@ -2,13 +2,13 @@
 // © 2022 Clemens Fischer
 // Licensed under the Microsoft Public License (Ms-PL)
 
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml.Media;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Media;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     namespace Caching
     {

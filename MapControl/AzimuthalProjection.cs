@@ -5,7 +5,7 @@
 using System;
 using Windows.Foundation;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Base class for azimuthal map projections.

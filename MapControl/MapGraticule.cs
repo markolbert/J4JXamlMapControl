@@ -6,7 +6,7 @@ using System;
 using System.Globalization;
 using Microsoft.UI.Xaml;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Draws a graticule overlay.

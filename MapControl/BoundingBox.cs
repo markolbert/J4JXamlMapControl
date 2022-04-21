@@ -5,7 +5,7 @@
 using System;
 using System.Globalization;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// A geographic bounding box with south and north latitude and west and east longitude values in degrees.

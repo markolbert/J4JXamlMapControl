@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public interface IMapLayer : IMapElement
     {
@@ -23,7 +23,7 @@ namespace MapControl
     /// The map can be rotated by an angle that is given by the Heading property.
     /// MapBase can contain map overlay child elements like other MapPanels or MapItemsControls.
     /// </summary>
-    public partial class MapBase : MapPanel
+    public partial class MapBase : J4JSoftware.XamlMapControl.MapPanel
     {
         public static TimeSpan ImageFadeDuration { get; set; } = TimeSpan.FromSeconds(0.1);
 

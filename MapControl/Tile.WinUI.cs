@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public partial class Tile
     {

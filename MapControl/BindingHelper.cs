@@ -5,7 +5,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     internal static class BindingHelper
     {

@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Container class for an item in a MapItemsControl.
@@ -92,7 +92,7 @@ namespace MapControl
         {
             SelectItems(item =>
             {
-                var loc = MapPanel.GetLocation(ContainerFromItem(item));
+                var loc = J4JSoftware.XamlMapControl.MapPanel.GetLocation(ContainerFromItem(item));
                 return loc != null && predicate(loc);
             });
         }
@@ -101,7 +101,7 @@ namespace MapControl
         {
             SelectItems(item =>
             {
-                var pos = MapPanel.GetViewPosition(ContainerFromItem(item));
+                var pos = J4JSoftware.XamlMapControl.MapPanel.GetViewPosition(ContainerFromItem(item));
                 return pos.HasValue && predicate(pos.Value);
             });
         }
@@ -145,8 +145,8 @@ namespace MapControl
             {
                 // Extended with Shift -> select items in view rectangle
 
-                var p1 = MapPanel.GetViewPosition(ContainerFromItem(SelectedItem));
-                var p2 = MapPanel.GetViewPosition(mapItem);
+                var p1 = J4JSoftware.XamlMapControl.MapPanel.GetViewPosition(ContainerFromItem(SelectedItem));
+                var p2 = J4JSoftware.XamlMapControl.MapPanel.GetViewPosition(mapItem);
 
                 if (p1.HasValue && p2.HasValue)
                 {

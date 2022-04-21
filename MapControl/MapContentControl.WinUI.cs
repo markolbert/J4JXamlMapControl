@@ -5,7 +5,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// ContentControl placed on a MapPanel at a geographic location specified by the Location property.
@@ -14,16 +14,16 @@ namespace MapControl
     {
         public static readonly DependencyProperty AutoCollapseProperty = DependencyProperty.Register(
             nameof(AutoCollapse), typeof(bool), typeof(MapContentControl),
-            new PropertyMetadata(false, (o, e) => MapPanel.SetAutoCollapse((MapContentControl)o, (bool)e.NewValue)));
+            new PropertyMetadata(false, (o, e) => J4JSoftware.XamlMapControl.MapPanel.SetAutoCollapse((MapContentControl)o, (bool)e.NewValue)));
 
         public static readonly DependencyProperty LocationProperty = DependencyProperty.Register(
             nameof(Location), typeof(Location), typeof(MapContentControl),
-            new PropertyMetadata(null, (o, e) => MapPanel.SetLocation((MapContentControl)o, (Location)e.NewValue)));
+            new PropertyMetadata(null, (o, e) => J4JSoftware.XamlMapControl.MapPanel.SetLocation((MapContentControl)o, (Location)e.NewValue)));
 
         public MapContentControl()
         {
             DefaultStyleKey = typeof(MapContentControl);
-            MapPanel.InitMapElement(this);
+            J4JSoftware.XamlMapControl.MapPanel.InitMapElement(this);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace MapControl
         {
             base.OnApplyTemplate();
 
-            var parentMap = MapPanel.GetParentMap(this);
+            var parentMap = J4JSoftware.XamlMapControl.MapPanel.GetParentMap(this);
 
             if (parentMap != null)
             {

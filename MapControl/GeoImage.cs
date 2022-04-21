@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public partial class GeoImage : ContentControl
     {
@@ -97,7 +97,7 @@ namespace MapControl
 
             Content = image;
 
-            MapPanel.SetBoundingBox(this, boundingBox);
+            J4JSoftware.XamlMapControl.MapPanel.SetBoundingBox(this, boundingBox);
         }
 
         private static async Task<Tuple<BitmapSource, Matrix>> ReadWorldFileImage(string sourcePath, string worldFilePath)

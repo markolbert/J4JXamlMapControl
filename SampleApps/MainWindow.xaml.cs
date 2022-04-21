@@ -1,5 +1,4 @@
 ﻿using MapControl;
-using MapControl.Caching;
 using MapControl.UiTools;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -9,6 +8,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using J4JSoftware.XamlMapControl;
 
 namespace SampleApplication
 {

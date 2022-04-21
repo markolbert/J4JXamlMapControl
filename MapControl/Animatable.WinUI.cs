@@ -5,7 +5,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Animation;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     internal static class Animatable
     {

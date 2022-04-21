@@ -2,7 +2,7 @@
 // © 2022 Clemens Fischer
 // Licensed under the Microsoft Public License (Ms-PL)
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Rotated rectangle used to arrange and rotate an element with a BoundingBox.

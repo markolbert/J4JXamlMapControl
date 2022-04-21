@@ -6,7 +6,7 @@ using System;
 using System.Globalization;
 using Windows.Foundation;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public enum MapProjectionType
     {

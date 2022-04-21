@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public interface ITileImageLoader
     {
@@ -58,7 +58,7 @@ namespace MapControl
             updateTimer = this.CreateTimer(UpdateInterval);
             updateTimer.Tick += async (s, e) => await Update();
 
-            MapPanel.InitMapElement(this);
+            J4JSoftware.XamlMapControl.MapPanel.InitMapElement(this);
         }
 
         public ITileImageLoader TileImageLoader { get; }

@@ -10,7 +10,7 @@ using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public partial class GeoImage
     {

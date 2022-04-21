@@ -4,6 +4,7 @@
 
 using ProjNet.CoordinateSystems;
 using System;
+using J4JSoftware.XamlMapControl;
 #if !UWP
 using System.Windows;
 #endif

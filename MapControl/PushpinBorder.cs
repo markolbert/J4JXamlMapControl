@@ -3,11 +3,11 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using System;
+using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using Windows.Foundation;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public partial class PushpinBorder
     {

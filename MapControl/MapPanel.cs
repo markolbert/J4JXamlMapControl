@@ -5,13 +5,13 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.Policy;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Point = J4JSoftware.XamlMapControl.Point;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Optional interface to hold the value of the attached property MapPanel.ParentMap.
@@ -30,12 +30,12 @@ namespace MapControl
         public static readonly DependencyProperty AutoCollapseProperty = DependencyProperty.RegisterAttached(
             "AutoCollapse", typeof(bool), typeof(MapPanel), new PropertyMetadata(false));
 
-        private MapBase parentMap;
+        private MapBase _parentMap;
 
         public MapBase ParentMap
         {
-            get { return parentMap; }
-            set { SetParentMap(value); }
+            get => _parentMap;
+            set => SetParentMap(value);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace MapControl
         /// </summary>
         public static Location GetLocation(FrameworkElement element)
         {
-            return (Location)element.GetValue(LocationProperty);
+            return (Location)element.GetValue(MapPanel.LocationProperty);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace MapControl
         /// </summary>
         public static void SetLocation(FrameworkElement element, Location value)
         {
-            element.SetValue(LocationProperty, value);
+            element.SetValue(MapPanel.LocationProperty, value);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace MapControl
         /// </summary>
         public static BoundingBox GetBoundingBox(FrameworkElement element)
         {
-            return (BoundingBox)element.GetValue(BoundingBoxProperty);
+            return (BoundingBox)element.GetValue(MapPanel.BoundingBoxProperty);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace MapControl
         /// </summary>
         public static void SetBoundingBox(FrameworkElement element, BoundingBox value)
         {
-            element.SetValue(BoundingBoxProperty, value);
+            element.SetValue(MapPanel.BoundingBoxProperty, value);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace MapControl
         /// </summary>
         public static Point? GetViewPosition(FrameworkElement element)
         {
-            return (Point?)element.GetValue(ViewPositionProperty);
+            return (Point?)element.GetValue(MapPanel.ViewPositionProperty);
         }
 
         /// <summary>
@@ -105,13 +105,13 @@ namespace MapControl
                 return null;
             }
 
-            var position = parentMap.LocationToView(location);
+            var position = _parentMap.LocationToView(location);
 
-            if (parentMap.MapProjection.Type <= MapProjectionType.NormalCylindrical && IsOutsideViewport(position))
+            if (_parentMap.MapProjection.Type <= MapProjectionType.NormalCylindrical && IsOutsideViewport(position))
             {
-                location = new Location(location.Latitude, parentMap.ConstrainedLongitude(location.Longitude));
+                location = new Location(location.Latitude, _parentMap.ConstrainedLongitude(location.Longitude));
 
-                position = parentMap.LocationToView(location);
+                position = _parentMap.LocationToView(location);
             }
 
             return position;
@@ -122,7 +122,7 @@ namespace MapControl
         /// </summary>
         public ViewRect GetViewRect(BoundingBox boundingBox)
         {
-            return GetViewRect(parentMap.MapProjection.BoundingBoxToRect(boundingBox));
+            return GetViewRect(_parentMap.MapProjection.BoundingBoxToRect(boundingBox));
         }
 
         /// <summary>
@@ -131,38 +131,38 @@ namespace MapControl
         public ViewRect GetViewRect(Rect rect)
         {
             var center = new Point(rect.X + rect.Width / 2d, rect.Y + rect.Height / 2d);
-            var position = parentMap.ViewTransform.MapToView(center);
+            var position = _parentMap.ViewTransform.MapToView(center);
 
-            if (parentMap.MapProjection.Type <= MapProjectionType.NormalCylindrical && IsOutsideViewport(position))
+            if (_parentMap.MapProjection.Type <= MapProjectionType.NormalCylindrical && IsOutsideViewport(position))
             {
-                var location = parentMap.MapProjection.MapToLocation(center);
+                var location = _parentMap.MapProjection.MapToLocation(center);
                 if (location != null)
                 {
-                    location.Longitude = parentMap.ConstrainedLongitude(location.Longitude);
-                    position = parentMap.LocationToView(location);
+                    location.Longitude = _parentMap.ConstrainedLongitude(location.Longitude);
+                    position = _parentMap.LocationToView(location);
                 }
             }
 
-            var width = rect.Width * parentMap.ViewTransform.Scale;
-            var height = rect.Height * parentMap.ViewTransform.Scale;
+            var width = rect.Width * _parentMap.ViewTransform.Scale;
+            var height = rect.Height * _parentMap.ViewTransform.Scale;
             var x = position.X - width / 2d;
             var y = position.Y - height / 2d;
 
-            return new ViewRect(x, y, width, height, parentMap.ViewTransform.Rotation);
+            return new ViewRect(x, y, width, height, _parentMap.ViewTransform.Rotation);
         }
 
         protected virtual void SetParentMap(MapBase map)
         {
-            if (parentMap != null && parentMap != this)
+            if (_parentMap != null && _parentMap != this)
             {
-                parentMap.ViewportChanged -= OnViewportChanged;
+                _parentMap.ViewportChanged -= OnViewportChanged;
             }
 
-            parentMap = map;
+            _parentMap = map;
 
-            if (parentMap != null && parentMap != this)
+            if (_parentMap != null && _parentMap != this)
             {
-                parentMap.ViewportChanged += OnViewportChanged;
+                _parentMap.ViewportChanged += OnViewportChanged;
 
                 OnViewportChanged(new ViewportChangedEventArgs());
             }
@@ -192,13 +192,13 @@ namespace MapControl
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (parentMap != null)
+            if (_parentMap != null)
             {
                 foreach (var element in Children.OfType<FrameworkElement>())
                 {
                     var position = GetViewPosition(GetLocation(element));
 
-                    SetViewPosition(element, position);
+                    MapPanel.SetViewPosition(element, position);
 
                     if (GetAutoCollapse(element))
                     {
@@ -244,8 +244,8 @@ namespace MapControl
 
         private bool IsOutsideViewport(Point point)
         {
-            return point.X < 0d || point.X > parentMap.RenderSize.Width
-                || point.Y < 0d || point.Y > parentMap.RenderSize.Height;
+            return point.X < 0d || point.X > _parentMap.RenderSize.Width
+                || point.Y < 0d || point.Y > _parentMap.RenderSize.Height;
         }
 
         private static void ArrangeElement(FrameworkElement element, ViewRect rect)

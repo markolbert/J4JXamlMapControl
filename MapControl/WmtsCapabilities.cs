@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Xml.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public class WmtsCapabilities
     {

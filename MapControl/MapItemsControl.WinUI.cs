@@ -7,22 +7,22 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public partial class MapItem
     {
         public static readonly DependencyProperty AutoCollapseProperty = DependencyProperty.Register(
             nameof(AutoCollapse), typeof(bool), typeof(MapItem),
-            new PropertyMetadata(false, (o, e) => MapPanel.SetAutoCollapse((MapItem)o, (bool)e.NewValue)));
+            new PropertyMetadata(false, (o, e) => J4JSoftware.XamlMapControl.MapPanel.SetAutoCollapse((MapItem)o, (bool)e.NewValue)));
 
         public static readonly DependencyProperty LocationProperty = DependencyProperty.Register(
             nameof(Location), typeof(Location), typeof(MapItem),
-            new PropertyMetadata(null, (o, e) => MapPanel.SetLocation((MapItem)o, (Location)e.NewValue)));
+            new PropertyMetadata(null, (o, e) => J4JSoftware.XamlMapControl.MapPanel.SetLocation((MapItem)o, (Location)e.NewValue)));
 
         public MapItem()
         {
             DefaultStyleKey = typeof(MapItem);
-            MapPanel.InitMapElement(this);
+            J4JSoftware.XamlMapControl.MapPanel.InitMapElement(this);
         }
 
         protected override void OnPointerPressed(PointerRoutedEventArgs e)
@@ -35,7 +35,7 @@ namespace MapControl
         {
             base.OnApplyTemplate();
 
-            var parentMap = MapPanel.GetParentMap(this);
+            var parentMap = J4JSoftware.XamlMapControl.MapPanel.GetParentMap(this);
 
             if (parentMap != null)
             {
@@ -56,7 +56,7 @@ namespace MapControl
         public MapItemsControl()
         {
             DefaultStyleKey = typeof(MapItemsControl);
-            MapPanel.InitMapElement(this);
+            J4JSoftware.XamlMapControl.MapPanel.InitMapElement(this);
         }
 
         public new FrameworkElement ContainerFromItem(object item)

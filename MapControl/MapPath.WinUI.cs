@@ -10,13 +10,13 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public partial class MapPath : Path
     {
         public MapPath()
         {
-            MapPanel.InitMapElement(this);
+            J4JSoftware.XamlMapControl.MapPanel.InitMapElement(this);
         }
 
 #region Methods used only by derived classes MapPolyline and MapPolygon

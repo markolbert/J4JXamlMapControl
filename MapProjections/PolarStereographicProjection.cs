@@ -3,6 +3,7 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using System;
+using J4JSoftware.XamlMapControl;
 #if !UWP
 using System.Windows;
 #endif

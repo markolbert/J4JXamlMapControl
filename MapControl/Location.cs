@@ -5,7 +5,7 @@
 using System;
 using System.Globalization;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// A geographic location with latitude and longitude values in degrees.

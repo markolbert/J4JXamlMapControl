@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     [ContentProperty(Name = "Child")]
     public partial class PushpinBorder : UserControl

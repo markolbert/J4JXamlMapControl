@@ -4,7 +4,7 @@
 
 using System;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Spherical Azimuthal Equidistant Projection - No standard CRS ID.

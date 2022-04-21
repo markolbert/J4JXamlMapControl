@@ -2,7 +2,7 @@
 // © 2022 Clemens Fischer
 // Licensed under the Microsoft Public License (Ms-PL)
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Replaces Windows.Foundation.Point to achieve necessary floating point precision.

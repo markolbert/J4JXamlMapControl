@@ -13,13 +13,13 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Displays a single map image, e.g. from a Web Map Service (WMS).
     /// The image must be provided by the abstract GetImageAsync() method.
     /// </summary>
-    public abstract class MapImageLayer : MapPanel, IMapLayer
+    public abstract class MapImageLayer : J4JSoftware.XamlMapControl.MapPanel, IMapLayer
     {
         public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
             nameof(Description), typeof(string), typeof(MapImageLayer), new PropertyMetadata(null));

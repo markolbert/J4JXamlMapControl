@@ -5,6 +5,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using J4JSoftware.XamlMapControl;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 

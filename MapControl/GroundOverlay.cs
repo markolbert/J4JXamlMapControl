@@ -15,9 +15,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
-    public class GroundOverlay : MapPanel
+    public class GroundOverlay : J4JSoftware.XamlMapControl.MapPanel
     {
         class LatLonBox : BoundingBox
         {

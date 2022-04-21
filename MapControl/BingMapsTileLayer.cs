@@ -9,7 +9,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Microsoft.UI.Xaml;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Displays Bing Maps tiles. The static ApiKey property must be set to a Bing Maps API Key.

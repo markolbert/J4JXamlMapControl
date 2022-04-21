@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public class LocationConverter : TypeConverter
     {

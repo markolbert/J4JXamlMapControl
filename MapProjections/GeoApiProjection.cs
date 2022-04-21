@@ -10,6 +10,9 @@ using ProjNet.CoordinateSystems.Transformations;
 using System;
 using System.Globalization;
 using Windows.Foundation;
+using J4JSoftware.XamlMapControl;
+using Location = J4JSoftware.XamlMapControl.Location;
+using Point = J4JSoftware.XamlMapControl.Point;
 
 namespace MapControl.Projections
 {

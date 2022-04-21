@@ -3,6 +3,7 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using System.Collections.Generic;
+using J4JSoftware.XamlMapControl;
 
 namespace MapControl.Projections
 {

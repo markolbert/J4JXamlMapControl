@@ -5,7 +5,7 @@
 using System;
 using XamlMedia = Microsoft.UI.Xaml.Media;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Replaces Windows.UI.Xaml.Media.Matrix to achieve necessary floating point precision.

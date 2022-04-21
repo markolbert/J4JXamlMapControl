@@ -6,7 +6,7 @@ using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     /// <summary>
     /// Defines the transformation between cartesian map coordinates in meters

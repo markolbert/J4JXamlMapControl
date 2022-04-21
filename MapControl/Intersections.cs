@@ -5,7 +5,7 @@
 using System;
 using Windows.Foundation;
 
-namespace MapControl
+namespace J4JSoftware.XamlMapControl
 {
     public static class Intersections
     {
