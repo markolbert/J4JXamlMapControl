@@ -8,7 +8,10 @@
         <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
         <UseWinUI>true</UseWinUI>
         <ApplicationManifest>app.manifest</ApplicationManifest>
+
+		<Nullable>Enable</Nullable>
         <RootNamespace>J4JSoftware.XamlMapControl</RootNamespace>
+	    <AssemblyName>J4JSoftware.XamlMapControl.WinUiApp</AssemblyName>
         <AssemblyTitle>XAML Map Control WinUI Sample Application</AssemblyTitle>
 	    <Version>0.5.0</Version>
 	    <Copyright>original Copyright © 2022 Clemens Fischer, modifications Copyright © Mark A. Olbert</Copyright>
