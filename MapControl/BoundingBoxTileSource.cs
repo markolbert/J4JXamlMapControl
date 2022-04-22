@@ -4,6 +4,7 @@
 
 using System;
 using System.Globalization;
+using J4JSoftware.XamlMapControl.Projections;
 
 namespace J4JSoftware.XamlMapControl
 {

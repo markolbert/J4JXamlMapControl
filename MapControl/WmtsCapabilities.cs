@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using J4JSoftware.XamlMapControl.Projections;
 
 namespace J4JSoftware.XamlMapControl
 {

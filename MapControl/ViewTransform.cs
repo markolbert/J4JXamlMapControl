@@ -4,6 +4,7 @@
 
 using System;
 using Windows.Foundation;
+using J4JSoftware.XamlMapControl.Projections;
 using Microsoft.UI.Xaml.Media;
 
 namespace J4JSoftware.XamlMapControl

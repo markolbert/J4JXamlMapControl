@@ -2,6 +2,7 @@
 // © 2022 Clemens Fischer
 // Licensed under the Microsoft Public License (Ms-PL)
 
+using J4JSoftware.XamlMapControl.Projections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 

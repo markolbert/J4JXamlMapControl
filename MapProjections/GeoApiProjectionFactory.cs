@@ -3,9 +3,9 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using System.Collections.Generic;
-using J4JSoftware.XamlMapControl;
+using MapControl.Projections;
 
-namespace MapControl.Projections
+namespace J4JSoftware.XamlMapControl.Projections
 {
     public class GeoApiProjectionFactory : MapProjectionFactory
     {
@@ -43,11 +43,11 @@ namespace MapControl.Projections
                     switch (code)
                     {
                         case WorldMercator:
-                            projection = new WorldMercatorProjection();
+                            projection = new MapControl.Projections.WorldMercatorProjection();
                             break;
 
                         case WebMercator:
-                            projection = new WebMercatorProjection();
+                            projection = new MapControl.Projections.WebMercatorProjection();
                             break;
 
                         case AutoUtm:

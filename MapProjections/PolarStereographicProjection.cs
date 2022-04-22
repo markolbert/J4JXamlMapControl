@@ -4,6 +4,7 @@
 
 using System;
 using J4JSoftware.XamlMapControl;
+using J4JSoftware.XamlMapControl.Projections;
 #if !UWP
 using System.Windows;
 #endif

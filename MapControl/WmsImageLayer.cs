@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Windows.Foundation;
+using J4JSoftware.XamlMapControl.Projections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
