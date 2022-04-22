@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using J4JSoftware.XamlMapControl.Projections;
 
 namespace J4JSoftware.XamlMapControl
 {
@@ -12,9 +13,7 @@ namespace J4JSoftware.XamlMapControl
     /// A collection of Locations with support for string parsing
     /// and calculation of great circle and rhumb line locations.
     /// </summary>
-#if !UWP
     [System.ComponentModel.TypeConverter(typeof(LocationCollectionConverter))]
-#endif
     public class LocationCollection : List<Location>
     {
         public LocationCollection()
