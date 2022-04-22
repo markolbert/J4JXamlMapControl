@@ -1,20 +1,19 @@
 ﻿using Microsoft.UI.Xaml;
 
-namespace SampleApplication
+namespace J4JSoftware.XamlMapControl.WinUIApp;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    private Window? _window;
+
+    public App()
     {
-        private Window window;
+        InitializeComponent();
+    }
 
-        public App()
-        {
-            InitializeComponent();
-        }
-
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
-        {
-            window = new MainWindow();
-            window.Activate();
-        }
+    protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+    {
+        _window = new MainWindow();
+        _window.Activate();
     }
 }

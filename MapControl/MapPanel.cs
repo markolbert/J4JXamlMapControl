@@ -26,20 +26,23 @@ public class MapPanel : Panel, IMapElement
     /// set to Collapsed when it is located outside the visible viewport area.
     /// </summary>
     public static readonly DependencyProperty AutoCollapseProperty = DependencyProperty.RegisterAttached(
-        "AutoCollapse", typeof(bool), typeof(MapPanel), new PropertyMetadata(false));
+        "AutoCollapse",
+        typeof( bool ),
+        typeof( MapPanel ),
+        new PropertyMetadata( false ) );
 
-    public static bool GetAutoCollapse(FrameworkElement element)
+    public static bool GetAutoCollapse( FrameworkElement element )
     {
-        var retVal = element.GetValue(AutoCollapseProperty);
+        var retVal = element.GetValue( AutoCollapseProperty );
 
-        if (retVal != null)
-            return (bool)retVal;
+        if( retVal != null )
+            return (bool) retVal;
 
         return false;
     }
 
-    public static void SetAutoCollapse(FrameworkElement element, bool value) =>
-        element.SetValue(AutoCollapseProperty, value);
+    public static void SetAutoCollapse( FrameworkElement element, bool value ) =>
+        element.SetValue( AutoCollapseProperty, value );
 
     #endregion
 
@@ -48,18 +51,18 @@ public class MapPanel : Panel, IMapElement
     /// <summary>
     /// The geodetic Location of an element.
     /// </summary>
-    public static readonly DependencyProperty LocationProperty = DependencyProperty.RegisterAttached("Location",
-        typeof(Location),
-        typeof(MapPanel),
-        new PropertyMetadata(null,
-                             (o, _) => (((FrameworkElement)o).Parent as MapPanel)
-                               ?.InvalidateArrange()));
+    public static readonly DependencyProperty LocationProperty = DependencyProperty.RegisterAttached( "Location",
+        typeof( Location ),
+        typeof( MapPanel ),
+        new PropertyMetadata( null,
+                              ( o, _ ) => ( ( (FrameworkElement) o ).Parent as MapPanel )
+                                ?.InvalidateArrange() ) );
 
-    public static Location? GetLocation(FrameworkElement element) =>
-        element.GetValue(MapPanel.LocationProperty) as Location;
+    public static Location? GetLocation( FrameworkElement element ) =>
+        element.GetValue( MapPanel.LocationProperty ) as Location;
 
-    public static void SetLocation(FrameworkElement element, Location value) =>
-        element.SetValue(MapPanel.LocationProperty, value);
+    public static void SetLocation( FrameworkElement element, Location value ) =>
+        element.SetValue( MapPanel.LocationProperty, value );
 
     #endregion
 
@@ -68,53 +71,58 @@ public class MapPanel : Panel, IMapElement
     /// <summary>
     /// The BoundingBox of an element.
     /// </summary>
-    public static readonly DependencyProperty BoundingBoxProperty = DependencyProperty.RegisterAttached(
-        "BoundingBox",
-        typeof(BoundingBox),
-        typeof(MapPanel),
-        new PropertyMetadata(null,
-                             (o, _) => (((FrameworkElement)o).Parent as MapPanel)
-                               ?.InvalidateArrange()));
+    public static readonly DependencyProperty BoundingBoxProperty = DependencyProperty.RegisterAttached( "BoundingBox",
+        typeof( BoundingBox ),
+        typeof( MapPanel ),
+        new PropertyMetadata( null,
+                              ( o, _ ) => ( ( (FrameworkElement) o ).Parent as MapPanel )
+                                ?.InvalidateArrange() ) );
 
-    public static BoundingBox? GetBoundingBox(FrameworkElement element) =>
-        element.GetValue(MapPanel.BoundingBoxProperty) as BoundingBox;
+    public static BoundingBox? GetBoundingBox( FrameworkElement element ) =>
+        element.GetValue( MapPanel.BoundingBoxProperty ) as BoundingBox;
 
-    public static void SetBoundingBox(FrameworkElement element, BoundingBox value) =>
-        element.SetValue(MapPanel.BoundingBoxProperty, value);
+    public static void SetBoundingBox( FrameworkElement element, BoundingBox value ) =>
+        element.SetValue( MapPanel.BoundingBoxProperty, value );
 
     #endregion
 
     #region ParentMap property
 
     public static readonly DependencyProperty ParentMapProperty = DependencyProperty.RegisterAttached(
-        nameof(ParentMap),
-        typeof(MapBase),
-        typeof(MapPanel),
-        new PropertyMetadata(null, ParentMapPropertyChanged));
+        nameof( ParentMap ),
+        typeof( MapBase ),
+        typeof( MapPanel ),
+        new PropertyMetadata( null, ParentMapPropertyChanged ) );
 
     public MapBase? ParentMap
     {
         get => _parentMap;
-        set => SetParentMap(value);
+        set => SetParentMap( value );
     }
 
-    public static MapBase? GetParentMap(FrameworkElement element)
+    public static MapBase? GetParentMap( FrameworkElement element )
     {
-        var parentMap = element.GetValue(ParentMapProperty) as MapBase;
+        var parentMap = element.GetValue( ParentMapProperty ) as MapBase;
 
-        if (parentMap == null && (parentMap = FindParentMap(element)) != null)
-            element.SetValue(ParentMapProperty, parentMap);
+        if( parentMap == null && ( parentMap = FindParentMap( element ) ) != null )
+            element.SetValue( ParentMapProperty, parentMap );
 
         return parentMap;
     }
 
-    private static MapBase? FindParentMap(FrameworkElement element)
+    private static MapBase? FindParentMap( FrameworkElement element )
     {
-        if( VisualTreeHelper.GetParent( element ) is not MapBase parent )
+        if( VisualTreeHelper.GetParent( element ) is not FrameworkElement parent )
             return null;
 
-        var parentMap = parent.GetValue( ParentMapProperty ) as MapBase;
-        return parentMap != null ? parentMap : FindParentMap( parent );
+        var parentMap = parent as MapBase;
+        if( parentMap != null )
+            return parentMap;
+
+        if( element.GetValue( ParentMapProperty ) is MapBase temp )
+            return temp;
+
+        return FindParentMap( parent );
     }
 
     #endregion
@@ -126,13 +134,13 @@ public class MapPanel : Panel, IMapElement
     /// </summary>
     private static readonly DependencyProperty ViewPositionProperty = DependencyProperty.RegisterAttached(
         "ViewPosition",
-        typeof(Point?),
-        typeof(MapPanel),
-        new PropertyMetadata(null));
+        typeof( Point? ),
+        typeof( MapPanel ),
+        new PropertyMetadata( null ) );
 
-    public static Point? GetViewPosition(FrameworkElement element)
+    public static Point? GetViewPosition( FrameworkElement element )
     {
-        return (Point?)element.GetValue(MapPanel.ViewPositionProperty);
+        return (Point?) element.GetValue( MapPanel.ViewPositionProperty );
     }
 
     #endregion
@@ -141,7 +149,7 @@ public class MapPanel : Panel, IMapElement
 
     public MapPanel()
     {
-        InitMapElement(this);
+        InitMapElement( this );
     }
 
     public static void InitMapElement( FrameworkElement element )
@@ -160,20 +168,19 @@ public class MapPanel : Panel, IMapElement
     /// <summary>
     /// Returns the view position of a Location.
     /// </summary>
-    public Point? GetViewPosition(Location? location)
+    public Point? GetViewPosition( Location? location )
     {
-        if (_parentMap == null)
+        if( _parentMap == null || location == null )
             return null;
 
-        var position = _parentMap.LocationToView(location);
+        var position = _parentMap.LocationToView( location );
 
         if( _parentMap.MapProjection.Type > MapProjectionType.NormalCylindrical
-        || !IsOutsideViewport( position )
-        || location == null )
+        || !IsOutsideViewport( position ) )
             return position;
 
-        location = new Location(location.Latitude, _parentMap.ConstrainedLongitude(location.Longitude));
-        position = _parentMap.LocationToView(location);
+        location = new Location( location.Latitude, _parentMap.ConstrainedLongitude( location.Longitude ) );
+        position = _parentMap.LocationToView( location );
 
         return position;
     }
@@ -181,32 +188,32 @@ public class MapPanel : Panel, IMapElement
     /// <summary>
     /// Returns the potentially rotated view rectangle of a BoundingBox.
     /// </summary>
-    public ViewRect GetViewRect(BoundingBox boundingBox)
+    public ViewRect GetViewRect( BoundingBox boundingBox )
     {
         if( _parentMap == null )
             throw new NullReferenceException( $"Undefined {nameof( _parentMap )}" );
 
-        return GetViewRect(_parentMap.MapProjection.BoundingBoxToRect(boundingBox));
+        return GetViewRect( _parentMap.MapProjection.BoundingBoxToRect( boundingBox ) );
     }
 
     /// <summary>
     /// Returns the potentially rotated view rectangle of a map coordinate rectangle.
     /// </summary>
-    public ViewRect GetViewRect(Rect rect)
+    public ViewRect GetViewRect( Rect rect )
     {
-        if (_parentMap == null)
-            throw new NullReferenceException($"Undefined {nameof(_parentMap)}");
+        if( _parentMap == null )
+            throw new NullReferenceException( $"Undefined {nameof( _parentMap )}" );
 
-        var center = new Point(rect.X + rect.Width / 2d, rect.Y + rect.Height / 2d);
-        var position = _parentMap.ViewTransform.MapToView(center);
+        var center = new Point( rect.X + rect.Width / 2d, rect.Y + rect.Height / 2d );
+        var position = _parentMap.ViewTransform.MapToView( center );
 
-        if (_parentMap.MapProjection.Type <= MapProjectionType.NormalCylindrical && IsOutsideViewport(position))
+        if( _parentMap.MapProjection.Type <= MapProjectionType.NormalCylindrical && IsOutsideViewport( position ) )
         {
-            var location = _parentMap.MapProjection.MapToLocation(center);
-            if (location != null)
+            var location = _parentMap.MapProjection.MapToLocation( center );
+            if( location != null )
             {
-                location.Longitude = _parentMap.ConstrainedLongitude(location.Longitude);
-                position = _parentMap.LocationToView(location);
+                location.Longitude = _parentMap.ConstrainedLongitude( location.Longitude );
+                position = _parentMap.LocationToView( location );
             }
         }
 
@@ -215,12 +222,12 @@ public class MapPanel : Panel, IMapElement
         var x = position.X - width / 2d;
         var y = position.Y - height / 2d;
 
-        return new ViewRect(x, y, width, height, _parentMap.ViewTransform.Rotation);
+        return new ViewRect( x, y, width, height, _parentMap.ViewTransform.Rotation );
     }
 
-    protected virtual void SetParentMap(MapBase? map)
+    protected virtual void SetParentMap( MapBase? map )
     {
-        if (_parentMap != null && _parentMap != this)
+        if( _parentMap != null && _parentMap != this )
             _parentMap.ViewportChanged -= OnViewportChanged;
 
         _parentMap = map;
@@ -230,11 +237,11 @@ public class MapPanel : Panel, IMapElement
 
         _parentMap.ViewportChanged += OnViewportChanged;
 
-        OnViewportChanged(new ViewportChangedEventArgs());
+        OnViewportChanged( new ViewportChangedEventArgs() );
     }
 
-    private void OnViewportChanged(object? sender, ViewportChangedEventArgs e) => OnViewportChanged(e);
-    protected virtual void OnViewportChanged(ViewportChangedEventArgs e) => InvalidateArrange();
+    private void OnViewportChanged( object? sender, ViewportChangedEventArgs e ) => OnViewportChanged( e );
+    protected virtual void OnViewportChanged( ViewportChangedEventArgs e ) => InvalidateArrange();
 
     // ReSharper disable once RedundantAssignment
     protected override Size MeasureOverride( Size availableSize )
@@ -249,97 +256,82 @@ public class MapPanel : Panel, IMapElement
         return new Size();
     }
 
-    protected override Size ArrangeOverride(Size finalSize)
+    protected override Size ArrangeOverride( Size finalSize )
     {
-        if (_parentMap != null)
+        if( _parentMap == null )
+            return finalSize;
+
+        foreach( var element in Children.OfType<FrameworkElement>() )
         {
-            foreach (var element in Children.OfType<FrameworkElement>())
+            var position = GetViewPosition( GetLocation( element ) );
+
+            SetViewPosition( element, position );
+
+            if( GetAutoCollapse( element ) )
             {
-                var position = GetViewPosition(GetLocation(element));
+                if( position.HasValue && IsOutsideViewport( position.Value ) )
+                    element.SetValue( VisibilityProperty, Visibility.Collapsed );
+                else element.ClearValue( VisibilityProperty );
+            }
 
-                MapPanel.SetViewPosition(element, position);
-
-                if (GetAutoCollapse(element))
+            try
+            {
+                if( position.HasValue )
+                    ArrangeElement( element, position.Value );
+                else
                 {
-                    if (position.HasValue && IsOutsideViewport(position.Value))
-                    {
-                        element.SetValue(VisibilityProperty, Visibility.Collapsed);
-                    }
-                    else
-                    {
-                        element.ClearValue(VisibilityProperty);
-                    }
+                    if( GetBoundingBox( element ) is {} boundingBox )
+                        ArrangeElement( element, GetViewRect( boundingBox ) );
+                    else ArrangeElement( element, finalSize );
                 }
-
-                try
-                {
-                    if (position.HasValue)
-                    {
-                        ArrangeElement(element, position.Value);
-                    }
-                    else
-                    {
-                        var boundingBox = GetBoundingBox(element);
-
-                        if (boundingBox != null)
-                        {
-                            ArrangeElement(element, GetViewRect(boundingBox));
-                        }
-                        else
-                        {
-                            ArrangeElement(element, finalSize);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"MapPanel.ArrangeElement: {ex.Message}");
-                }
+            }
+            catch( Exception ex )
+            {
+                Debug.WriteLine( $"MapPanel.ArrangeElement: {ex.Message}" );
             }
         }
 
         return finalSize;
     }
 
-    private static void SetViewPosition(FrameworkElement element, Point? viewPosition)
-    {
-        element.SetValue(ViewPositionProperty, viewPosition);
-    }
+    private void SetViewPosition( FrameworkElement element, Point? viewPosition ) =>
+        element.SetValue( ViewPositionProperty, viewPosition );
 
-    private bool IsOutsideViewport(Point point)
+    private bool IsOutsideViewport( Point point )
     {
         if( _parentMap == null )
             throw new NullReferenceException( $"{nameof( _parentMap )} is undefined" );
 
-        return point.X < 0d || point.X > _parentMap.RenderSize.Width
-         || point.Y < 0d || point.Y > _parentMap.RenderSize.Height;
+        return point.X < 0d
+         || point.X > _parentMap.RenderSize.Width
+         || point.Y < 0d
+         || point.Y > _parentMap.RenderSize.Height;
     }
 
-    private static void ArrangeElement(FrameworkElement element, ViewRect rect)
+    private static void ArrangeElement( FrameworkElement element, ViewRect rect )
     {
         element.Width = rect.Width;
         element.Height = rect.Height;
 
-        ArrangeElement(element, new Rect(rect.X, rect.Y, rect.Width, rect.Height));
+        ArrangeElement( element, new Rect( rect.X, rect.Y, rect.Width, rect.Height ) );
 
-        if (element.RenderTransform is RotateTransform rotateTransform)
-        {
+        if( element.RenderTransform is RotateTransform rotateTransform )
             rotateTransform.Angle = rect.Rotation;
-        }
-        else if (rect.Rotation != 0d)
-        {
-            rotateTransform = new RotateTransform { Angle = rect.Rotation };
-            element.RenderTransform = rotateTransform;
-            element.RenderTransformOrigin = new Point(0.5, 0.5);
-        }
+        else
+            if( rect.Rotation != 0d )
+            {
+                rotateTransform = new RotateTransform { Angle = rect.Rotation };
+                element.RenderTransform = rotateTransform;
+                element.RenderTransformOrigin = new Point( 0.5, 0.5 );
+            }
     }
 
-    private static void ArrangeElement(FrameworkElement element, Point position)
+    private static void ArrangeElement( FrameworkElement element, Point position )
     {
-        var rect = new Rect(position, element.DesiredSize);
+        var rect = new Rect( position, element.DesiredSize );
 
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-        switch (element.HorizontalAlignment)
+        switch( element.HorizontalAlignment )
         {
             case HorizontalAlignment.Center:
                 rect.X -= rect.Width / 2d;
@@ -351,7 +343,7 @@ public class MapPanel : Panel, IMapElement
         }
 
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-        switch (element.VerticalAlignment)
+        switch( element.VerticalAlignment )
         {
             case VerticalAlignment.Center:
                 rect.Y -= rect.Height / 2d;
@@ -362,18 +354,18 @@ public class MapPanel : Panel, IMapElement
                 break;
         }
 
-        ArrangeElement(element, rect);
+        ArrangeElement( element, rect );
     }
 
-    private static void ArrangeElement(FrameworkElement element, Size parentSize)
+    private static void ArrangeElement( FrameworkElement element, Size parentSize )
     {
-        var rect = new Rect(new Point(), element.DesiredSize);
+        var rect = new Rect( new Point(), element.DesiredSize );
 
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-        switch (element.HorizontalAlignment)
+        switch( element.HorizontalAlignment )
         {
             case HorizontalAlignment.Center:
-                rect.X = (parentSize.Width - rect.Width) / 2d;
+                rect.X = ( parentSize.Width - rect.Width ) / 2d;
                 break;
 
             case HorizontalAlignment.Right:
@@ -386,10 +378,10 @@ public class MapPanel : Panel, IMapElement
         }
 
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-        switch (element.VerticalAlignment)
+        switch( element.VerticalAlignment )
         {
             case VerticalAlignment.Center:
-                rect.Y = (parentSize.Height - rect.Height) / 2d;
+                rect.Y = ( parentSize.Height - rect.Height ) / 2d;
                 break;
 
             case VerticalAlignment.Bottom:
@@ -401,25 +393,25 @@ public class MapPanel : Panel, IMapElement
                 break;
         }
 
-        ArrangeElement(element, rect);
+        ArrangeElement( element, rect );
     }
 
-    private static void ArrangeElement(FrameworkElement element, Rect rect)
+    private static void ArrangeElement( FrameworkElement element, Rect rect )
     {
-        if (element.UseLayoutRounding)
+        if( element.UseLayoutRounding )
         {
-            rect.X = Math.Round(rect.X);
-            rect.Y = Math.Round(rect.Y);
-            rect.Width = Math.Round(rect.Width);
-            rect.Height = Math.Round(rect.Height);
+            rect.X = Math.Round( rect.X );
+            rect.Y = Math.Round( rect.Y );
+            rect.Width = Math.Round( rect.Width );
+            rect.Height = Math.Round( rect.Height );
         }
 
-        element.Arrange(rect);
+        element.Arrange( rect );
     }
 
-    private static void ParentMapPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+    private static void ParentMapPropertyChanged( DependencyObject obj, DependencyPropertyChangedEventArgs e )
     {
-        if (obj is IMapElement mapElement)
+        if( obj is IMapElement mapElement )
         {
             mapElement.ParentMap = e.NewValue as MapBase;
         }

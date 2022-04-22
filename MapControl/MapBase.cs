@@ -647,14 +647,12 @@ public class MapBase : MapPanel
             UpdateTransform();
         }
 
-        if (translation.X != 0d || translation.Y != 0d)
-        {
-            var center = ViewToLocation(_viewCenter - translation);
-            if (center != null)
-            {
-                Center = center;
-            }
-        }
+        if( translation.X == 0d && translation.Y == 0d )
+            return;
+
+        var center = ViewToLocation(_viewCenter - translation);
+        if (center != null)
+            Center = center;
     }
 
     /// <summary>
@@ -701,11 +699,11 @@ public class MapBase : MapPanel
     {
         zoomLevel = Math.Min( Math.Max( zoomLevel, MinZoomLevel ), MaxZoomLevel );
 
-        if( Math.Abs( TargetZoomLevel - zoomLevel ) > XamlMapControlConstants.ZoomTolerance )
-        {
-            SetTransformCenter( center );
-            TargetZoomLevel = zoomLevel;
-        }
+        if( !( Math.Abs( TargetZoomLevel - zoomLevel ) > XamlMapControlConstants.ZoomTolerance ) )
+            return;
+
+        SetTransformCenter( center );
+        TargetZoomLevel = zoomLevel;
     }
 
     /// <summary>

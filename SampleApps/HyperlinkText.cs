@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 
-namespace SampleApplication
+namespace J4JSoftware.XamlMapControl.WinUIApp
 {
     public static class HyperlinkText
     {

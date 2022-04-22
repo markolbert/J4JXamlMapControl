@@ -9,27 +9,27 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace MapControl.MBTiles
+namespace J4JSoftware.XamlMapControl.MBTiles
 {
-    public sealed class MBTileData : IDisposable
+    public sealed class MbTileData : IDisposable
     {
-        private readonly SQLiteConnection connection;
+        private readonly SQLiteConnection _connection;
 
         public IDictionary<string, string> Metadata { get; } = new Dictionary<string, string>();
 
-        private MBTileData(string file)
+        private MbTileData(string file)
         {
-            connection = new SQLiteConnection("Data Source=" + Path.GetFullPath(file));
+            _connection = new SQLiteConnection("Data Source=" + Path.GetFullPath(file));
         }
 
         public void Dispose()
         {
-            connection.Dispose();
+            _connection.Dispose();
         }
 
-        public static async Task<MBTileData> CreateAsync(string file)
+        public static async Task<MbTileData> CreateAsync(string file)
         {
-            var tileData = new MBTileData(file);
+            var tileData = new MbTileData(file);
 
             await tileData.OpenAsync();
             await tileData.ReadMetadataAsync();
@@ -39,14 +39,14 @@ namespace MapControl.MBTiles
 
         private async Task OpenAsync()
         {
-            await connection.OpenAsync();
+            await _connection.OpenAsync();
 
-            using (var command = new SQLiteCommand("create table if not exists metadata (name string, value string)", connection))
+            await using (var command = new SQLiteCommand("create table if not exists metadata (name string, value string)", _connection))
             {
                 await command.ExecuteNonQueryAsync();
             }
 
-            using (var command = new SQLiteCommand("create table if not exists tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob)", connection))
+            await using (var command = new SQLiteCommand("create table if not exists tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob)", _connection))
             {
                 await command.ExecuteNonQueryAsync();
             }
@@ -56,14 +56,12 @@ namespace MapControl.MBTiles
         {
             try
             {
-                using (var command = new SQLiteCommand("select * from metadata", connection))
-                {
-                    var reader = await command.ExecuteReaderAsync();
+                await using var command = new SQLiteCommand("select * from metadata", _connection);
+                var reader = await command.ExecuteReaderAsync();
 
-                    while (await reader.ReadAsync())
-                    {
-                        Metadata[(string)reader["name"]] = (string)reader["value"];
-                    }
+                while (await reader.ReadAsync())
+                {
+                    Metadata[(string)reader["name"]] = (string)reader["value"];
                 }
             }
             catch (Exception ex)
@@ -76,15 +74,15 @@ namespace MapControl.MBTiles
         {
             try
             {
-                using (var command = new SQLiteCommand("insert or replace into metadata (name, value) values (@n, @v)", connection))
-                {
-                    foreach (var keyValue in Metadata)
-                    {
-                        command.Parameters.AddWithValue("@n", keyValue.Key);
-                        command.Parameters.AddWithValue("@v", keyValue.Value);
+                await using var command =
+                    new SQLiteCommand( "insert or replace into metadata (name, value) values (@n, @v)", _connection );
 
-                        await command.ExecuteNonQueryAsync();
-                    }
+                foreach (var keyValue in Metadata)
+                {
+                    command.Parameters.AddWithValue("@n", keyValue.Key);
+                    command.Parameters.AddWithValue("@v", keyValue.Value);
+
+                    await command.ExecuteNonQueryAsync();
                 }
             }
             catch (Exception ex)
@@ -93,20 +91,22 @@ namespace MapControl.MBTiles
             }
         }
 
-        public async Task<byte[]> ReadImageBufferAsync(int x, int y, int zoomLevel)
+        public async Task<byte[]?> ReadImageBufferAsync(int x, int y, int zoomLevel)
         {
-            byte[] imageBuffer = null;
+            byte[]? imageBuffer = null;
 
             try
             {
-                using (var command = new SQLiteCommand("select tile_data from tiles where zoom_level=@z and tile_column=@x and tile_row=@y", connection))
-                {
-                    command.Parameters.AddWithValue("@z", zoomLevel);
-                    command.Parameters.AddWithValue("@x", x);
-                    command.Parameters.AddWithValue("@y", (1 << zoomLevel) - y - 1);
+                await using var command =
+                    new SQLiteCommand(
+                        "select tile_data from tiles where zoom_level=@z and tile_column=@x and tile_row=@y",
+                        _connection );
 
-                    imageBuffer = await command.ExecuteScalarAsync() as byte[];
-                }
+                command.Parameters.AddWithValue("@z", zoomLevel);
+                command.Parameters.AddWithValue("@x", x);
+                command.Parameters.AddWithValue("@y", (1 << zoomLevel) - y - 1);
+
+                imageBuffer = await command.ExecuteScalarAsync() as byte[];
             }
             catch (Exception ex)
             {
@@ -120,15 +120,17 @@ namespace MapControl.MBTiles
         {
             try
             {
-                using (var command = new SQLiteCommand("insert or replace into tiles (zoom_level, tile_column, tile_row, tile_data) values (@z, @x, @y, @b)", connection))
-                {
-                    command.Parameters.AddWithValue("@z", zoomLevel);
-                    command.Parameters.AddWithValue("@x", x);
-                    command.Parameters.AddWithValue("@y", (1 << zoomLevel) - y - 1);
-                    command.Parameters.AddWithValue("@b", imageBuffer);
+                await using var command =
+                    new SQLiteCommand(
+                        "insert or replace into tiles (zoom_level, tile_column, tile_row, tile_data) values (@z, @x, @y, @b)",
+                        _connection );
 
-                    await command.ExecuteNonQueryAsync();
-                }
+                command.Parameters.AddWithValue("@z", zoomLevel);
+                command.Parameters.AddWithValue("@x", x);
+                command.Parameters.AddWithValue("@y", (1 << zoomLevel) - y - 1);
+                command.Parameters.AddWithValue("@b", imageBuffer);
+
+                await command.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {

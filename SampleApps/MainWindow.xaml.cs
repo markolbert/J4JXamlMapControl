@@ -1,6 +1,4 @@
-﻿using MapControl;
-using MapControl.UiTools;
-using Microsoft.UI;
+﻿using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -8,9 +6,9 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using J4JSoftware.XamlMapControl;
+using J4JSoftware.XamlMapControl.MapUiTools;
 
-namespace SampleApplication
+namespace J4JSoftware.XamlMapControl.WinUIApp
 {
     public sealed partial class MainWindow : Window
     {
@@ -39,7 +37,7 @@ namespace SampleApplication
 
             if (!string.IsNullOrEmpty(BingMapsTileLayer.ApiKey))
             {
-                mapLayersMenuButton.MapLayers.Add(new MapLayerItem
+                MapLayersMenuButton.MapLayers.Add(new MapLayerItem
                 {
                     Text = "Bing Maps Road",
                     Layer = new BingMapsTileLayer
@@ -50,7 +48,7 @@ namespace SampleApplication
                     }
                 });
 
-                mapLayersMenuButton.MapLayers.Add(new MapLayerItem
+                MapLayersMenuButton.MapLayers.Add(new MapLayerItem
                 {
                     Text = "Bing Maps Aerial",
                     Layer = new BingMapsTileLayer
@@ -63,7 +61,7 @@ namespace SampleApplication
                     }
                 });
 
-                mapLayersMenuButton.MapLayers.Add(new MapLayerItem
+                MapLayersMenuButton.MapLayers.Add(new MapLayerItem
                 {
                     Text = "Bing Maps Aerial with Labels",
                     Layer = new BingMapsTileLayer
@@ -85,6 +83,8 @@ namespace SampleApplication
             }
         }
 
+        private MapViewModel ViewModel { get; } = new();
+
         partial void AddChartServerLayer();
 
         private async void WindowActivated(object sender, WindowActivatedEventArgs e)
@@ -97,12 +97,12 @@ namespace SampleApplication
 
         private void ResetHeadingButtonClick(object sender, RoutedEventArgs e)
         {
-            map.TargetHeading = 0d;
+            TheMap.TargetHeading = 0d;
         }
 
         private void MapPointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            var location = map.ViewToLocation(e.GetCurrentPoint(map).Position);
+            var location = TheMap.ViewToLocation(e.GetCurrentPoint(TheMap).Position);
 
             if (location != null)
             {
@@ -123,23 +123,23 @@ namespace SampleApplication
                     lonHemisphere = 'W';
                 }
 
-                mouseLocation.Text = string.Format(CultureInfo.InvariantCulture,
+                MouseLocation.Text = string.Format(CultureInfo.InvariantCulture,
                     "{0}  {1:00} {2:00.000}\n{3} {4:000} {5:00.000}",
                     latHemisphere, latitude / 60000, (latitude % 60000) / 1000d,
                     lonHemisphere, longitude / 60000, (longitude % 60000) / 1000d);
-                mouseLocation.Visibility = Visibility.Visible;
+                MouseLocation.Visibility = Visibility.Visible;
             }
             else
             {
-                mouseLocation.Visibility = Visibility.Collapsed;
-                mouseLocation.Text = string.Empty;
+                MouseLocation.Visibility = Visibility.Collapsed;
+                MouseLocation.Text = string.Empty;
             }
         }
 
         private void MapPointerExited(object sender, PointerRoutedEventArgs e)
         {
-            mouseLocation.Visibility = Visibility.Collapsed;
-            mouseLocation.Text = string.Empty;
+            MouseLocation.Visibility = Visibility.Collapsed;
+            MouseLocation.Text = string.Empty;
         }
     }
 }

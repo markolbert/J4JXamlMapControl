@@ -14,7 +14,9 @@
 	    <Copyright>original Copyright © 2022 Clemens Fischer, modifications Copyright © Mark A. Olbert</Copyright>
     </PropertyGroup>
     <ItemGroup>
+      <Compile Remove="paths\MapPath.WinUI.cs" />
       <Compile Remove="MapBase.WinUI.cs" />
+      <Compile Remove="MapItemsControl.WinUI.cs" />
       <Compile Remove="MapPanel.WinUI.cs" />
     </ItemGroup>
 

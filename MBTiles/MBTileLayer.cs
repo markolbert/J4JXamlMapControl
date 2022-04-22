@@ -4,6 +4,7 @@
 
 using System.Threading.Tasks;
 using J4JSoftware.XamlMapControl;
+using J4JSoftware.XamlMapControl.MBTiles;
 using Microsoft.UI.Xaml;
 
 namespace MapControl.MBTiles
@@ -36,7 +37,7 @@ namespace MapControl.MBTiles
         /// <summary>
         /// May be overridden to create a derived MBTileSource that handles other tile formats than png and jpg.
         /// </summary>
-        protected virtual MBTileSource CreateTileSource(MBTileData tileData)
+        protected virtual MBTileSource CreateTileSource(MbTileData tileData)
         {
             return new MBTileSource(tileData);
         }
@@ -53,7 +54,7 @@ namespace MapControl.MBTiles
 
             if (file != null)
             {
-                var tileData = await MBTileData.CreateAsync(file);
+                var tileData = await MbTileData.CreateAsync(file);
 
                 if (tileData.Metadata.TryGetValue("name", out string sourceName))
                 {

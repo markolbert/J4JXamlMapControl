@@ -3,7 +3,7 @@ using System.Globalization;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace SampleApplication
+namespace J4JSoftware.XamlMapControl.WinUIApp
 {
     public class HeadingToVisibilityConverter : IValueConverter
     {

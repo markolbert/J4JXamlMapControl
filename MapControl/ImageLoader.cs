@@ -21,16 +21,14 @@ namespace J4JSoftware.XamlMapControl
         public static HttpClient HttpClient { get; set; } = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
 
 
-        public static async Task<ImageSource> LoadImageAsync(Uri uri)
+        public static async Task<ImageSource?> LoadImageAsync(Uri uri)
         {
-            ImageSource image = null;
+            ImageSource? image = null;
 
             try
             {
                 if (!uri.IsAbsoluteUri || uri.IsFile)
-                {
                     image = await LoadImageAsync(uri.IsAbsoluteUri ? uri.LocalPath : uri.OriginalString);
-                }
                 else if (uri.Scheme == "http" || uri.Scheme == "https")
                 {
                     var response = await GetHttpResponseAsync(uri);
@@ -65,31 +63,27 @@ namespace J4JSoftware.XamlMapControl
             }
         }
 
-        internal static async Task<HttpResponse> GetHttpResponseAsync(Uri uri)
+        internal static async Task<HttpResponse?> GetHttpResponseAsync(Uri uri)
         {
-            HttpResponse response = null;
+            HttpResponse? response = null;
 
             try
             {
-                using (var responseMessage = await HttpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+                using var responseMessage = await HttpClient.GetAsync( uri, HttpCompletionOption.ResponseHeadersRead )
+                                                            .ConfigureAwait( false );
+
+                if( responseMessage.IsSuccessStatusCode )
                 {
-                    if (responseMessage.IsSuccessStatusCode)
+                    if( !responseMessage.Headers.TryGetValues( "X-VE-Tile-Info", out IEnumerable<string>? tileInfo )
+                    || !tileInfo.Contains( "no-tile" ) )
                     {
-                        byte[] buffer = null;
-
-                        if (!responseMessage.Headers.TryGetValues("X-VE-Tile-Info", out IEnumerable<string> tileInfo) ||
-                            !tileInfo.Contains("no-tile"))
-                        {
-                            buffer = await responseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                        }
-
-                        response = new HttpResponse(buffer, responseMessage.Headers.CacheControl?.MaxAge);
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"ImageLoader: {uri}: {(int)responseMessage.StatusCode} {responseMessage.ReasonPhrase}");
+                        var buffer = await responseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait( false );
+                        response = new HttpResponse( buffer, responseMessage.Headers.CacheControl?.MaxAge );
                     }
                 }
+                else
+                    Debug.WriteLine(
+                        $"ImageLoader: {uri}: {(int) responseMessage.StatusCode} {responseMessage.ReasonPhrase}" );
             }
             catch (Exception ex)
             {

@@ -5,65 +5,59 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using J4JSoftware.XamlMapControl;
+using MapControl.MBTiles;
 using Microsoft.UI.Xaml.Media;
 
-namespace MapControl.MBTiles
+namespace J4JSoftware.XamlMapControl.MBTiles;
+
+public class MBTileSource : TileSource, IDisposable
 {
-    public class MBTileSource : TileSource, IDisposable
+    public MbTileData? TileData { get; }
+
+    public MBTileSource(MbTileData tiledata)
     {
-        public MBTileData TileData { get; }
+        var format = tiledata.Metadata["format"];
 
-        public MBTileSource(MBTileData tiledata)
+        if (format == "png" || format == "jpg")
+            TileData = tiledata;
+        else Debug.WriteLine($"MBTileSource: unsupported format '{format}'");
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && TileData != null)
         {
-            var format = tiledata.Metadata["format"];
-
-            if (format == "png" || format == "jpg")
-            {
-                TileData = tiledata;
-            }
-            else
-            {
-                Debug.WriteLine($"MBTileSource: unsupported format '{format}'");
-            }
+            TileData.Dispose();
         }
+    }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+    public override async Task<ImageSource?> LoadImageAsync(int x, int y, int zoomLevel)
+    {
+        ImageSource? image = null;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing && TileData != null)
-            {
-                TileData.Dispose();
-            }
-        }
-
-        public override async Task<ImageSource> LoadImageAsync(int x, int y, int zoomLevel)
-        {
-            ImageSource image = null;
-
-            if (TileData != null)
-            {
-                var buffer = await TileData.ReadImageBufferAsync(x, y, zoomLevel);
-
-                if (buffer != null)
-                {
-                    try
-                    {
-                        image = await ImageLoader.LoadImageAsync(buffer);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"MBTileSource : {ex.Message}");
-                    }
-                }
-            }
-
+        if( TileData == null )
             return image;
+
+        var buffer = await TileData.ReadImageBufferAsync(x, y, zoomLevel);
+
+        if (buffer != null)
+        {
+            try
+            {
+                image = await ImageLoader.LoadImageAsync(buffer);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"MBTileSource : {ex.Message}");
+            }
         }
+
+        return image;
     }
 }

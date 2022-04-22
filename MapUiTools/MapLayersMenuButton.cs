@@ -9,135 +9,123 @@ using J4JSoftware.XamlMapControl;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 
-namespace MapControl.UiTools
+namespace J4JSoftware.XamlMapControl.MapUiTools;
+
+[ContentProperty(Name = nameof(MapLayers))]
+public class MapLayersMenuButton : MenuButton
 {
-    [ContentProperty(Name = nameof(Layer))]
-    public class MapLayerItem
+    #region Map property
+
+    public static readonly DependencyProperty MapProperty = DependencyProperty.Register(
+        nameof(Map), typeof(MapBase), typeof(MapLayersMenuButton),
+        new PropertyMetadata(null, (o, e) => ((MapLayersMenuButton)o).InitializeMenu()));
+
+    public MapBase? Map
     {
-        public string Text { get; set; }
-        public UIElement Layer { get; set; }
+        get => (MapBase)GetValue(MapProperty);
+        set => SetValue(MapProperty, value);
     }
 
-    [ContentProperty(Name = nameof(MapLayers))]
-    public class MapLayersMenuButton : MenuButton
+    #endregion
+
+    private UIElement? _selectedLayer;
+
+    public MapLayersMenuButton()
+        : base("\uE81E")
     {
-        private UIElement selectedLayer;
+        ((INotifyCollectionChanged)MapLayers).CollectionChanged += (s, e) => InitializeMenu();
+        ((INotifyCollectionChanged)MapOverlays).CollectionChanged += (s, e) => InitializeMenu();
+    }
 
-        public MapLayersMenuButton()
-            : base("\uE81E")
+    public Collection<MapLayerItem> MapLayers { get; } = new ObservableCollection<MapLayerItem>();
+
+    public Collection<MapLayerItem> MapOverlays { get; } = new ObservableCollection<MapLayerItem>();
+
+    private void InitializeMenu()
+    {
+        if( Map == null )
+            return;
+
+        var menu = CreateMenu();
+
+        foreach (var item in MapLayers)
         {
-            ((INotifyCollectionChanged)MapLayers).CollectionChanged += (s, e) => InitializeMenu();
-            ((INotifyCollectionChanged)MapOverlays).CollectionChanged += (s, e) => InitializeMenu();
+            menu.Items.Add(CreateMenuItem(item.Text, item.Layer, MapLayerClicked));
         }
 
-        public static readonly DependencyProperty MapProperty = DependencyProperty.Register(
-            nameof(Map), typeof(MapBase), typeof(MapLayersMenuButton),
-            new PropertyMetadata(null, (o, e) => ((MapLayersMenuButton)o).InitializeMenu()));
+        var initialLayer = MapLayers.Select(l => l.Layer).FirstOrDefault();
 
-        public MapBase Map
+        if (MapOverlays.Count > 0)
         {
-            get { return (MapBase)GetValue(MapProperty); }
-            set { SetValue(MapProperty, value); }
-        }
+            if (initialLayer != null)
+                menu.Items.Add(CreateSeparator());
 
-        public Collection<MapLayerItem> MapLayers { get; } = new ObservableCollection<MapLayerItem>();
-
-        public Collection<MapLayerItem> MapOverlays { get; } = new ObservableCollection<MapLayerItem>();
-
-        private void InitializeMenu()
-        {
-            if (Map != null)
+            foreach (var item in MapOverlays)
             {
-                var menu = CreateMenu();
+                menu.Items.Add(CreateMenuItem(item.Text, item.Layer, MapOverlayClicked));
+            }
+        }
 
-                foreach (var item in MapLayers)
+        if (initialLayer != null)
+            SetMapLayer(initialLayer);
+    }
+
+    private void MapLayerClicked(object sender, RoutedEventArgs e)
+    {
+        var item = (FrameworkElement)sender;
+        var layer = (UIElement)item.Tag;
+
+        SetMapLayer(layer);
+    }
+
+    private void MapOverlayClicked(object sender, RoutedEventArgs e)
+    {
+        var item = (FrameworkElement)sender;
+        var layer = (UIElement)item.Tag;
+
+        ToggleMapOverlay(layer);
+    }
+
+    private void SetMapLayer(UIElement layer)
+    {
+        if (_selectedLayer != layer)
+        {
+            _selectedLayer = layer;
+            Map!.MapLayer = _selectedLayer;
+        }
+
+        UpdateCheckedStates();
+    }
+
+    private void ToggleMapOverlay(UIElement layer)
+    {
+        if (Map!.Children.Contains(layer))
+            Map.Children.Remove(layer);
+        else
+        {
+            var index = 1;
+
+            foreach (var overlay in MapOverlays.Select(l => l.Layer))
+            {
+                if (overlay == layer)
                 {
-                    menu.Items.Add(CreateMenuItem(item.Text, item.Layer, MapLayerClicked));
+                    Map.Children.Insert(index, layer);
+                    break;
                 }
 
-                var initialLayer = MapLayers.Select(l => l.Layer).FirstOrDefault();
-
-                if (MapOverlays.Count > 0)
-                {
-                    if (initialLayer != null)
-                    {
-                        menu.Items.Add(CreateSeparator());
-                    }
-
-                    foreach (var item in MapOverlays)
-                    {
-                        menu.Items.Add(CreateMenuItem(item.Text, item.Layer, MapOverlayClicked));
-                    }
-                }
-
-                if (initialLayer != null)
-                {
-                    SetMapLayer(initialLayer);
-                }
+                if (Map.Children.Contains(overlay))
+                    index++;
             }
         }
 
-        private void MapLayerClicked(object sender, RoutedEventArgs e)
+        UpdateCheckedStates();
+    }
+
+    private void UpdateCheckedStates()
+    {
+        foreach (var item in GetMenuItems())
         {
-            var item = (FrameworkElement)sender;
-            var layer = (UIElement)item.Tag;
-
-            SetMapLayer(layer);
-        }
-
-        private void MapOverlayClicked(object sender, RoutedEventArgs e)
-        {
-            var item = (FrameworkElement)sender;
-            var layer = (UIElement)item.Tag;
-
-            ToggleMapOverlay(layer);
-        }
-
-        private void SetMapLayer(UIElement layer)
-        {
-            if (selectedLayer != layer)
-            {
-                selectedLayer = layer;
-                Map.MapLayer = selectedLayer;
-            }
-
-            UpdateCheckedStates();
-        }
-
-        private void ToggleMapOverlay(UIElement layer)
-        {
-            if (Map.Children.Contains(layer))
-            {
-                Map.Children.Remove(layer);
-            }
-            else
-            {
-                int index = 1;
-
-                foreach (var overlay in MapOverlays.Select(l => l.Layer))
-                {
-                    if (overlay == layer)
-                    {
-                        Map.Children.Insert(index, layer);
-                        break;
-                    }
-
-                    if (Map.Children.Contains(overlay))
-                    {
-                        index++;
-                    }
-                }
-            }
-
-            UpdateCheckedStates();
-        }
-
-        private void UpdateCheckedStates()
-        {
-            foreach (var item in GetMenuItems())
-            {
-                item.IsChecked = Map.Children.Contains((UIElement)item.Tag);
-            }
+            item.IsChecked = Map.Children.Contains((UIElement)item.Tag);
         }
     }
 }
