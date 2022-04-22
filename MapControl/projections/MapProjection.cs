@@ -46,7 +46,7 @@ public abstract class MapProjection
     /// <summary>
     /// Transforms a Location in geographic coordinates to a Point in cartesian map coordinates.
     /// </summary>
-    public abstract Point LocationToMap(Location location);
+    public abstract Point LocationToMap(Location? location);
 
     /// <summary>
     /// Transforms a Point in cartesian map coordinates to a Location in geographic coordinates.

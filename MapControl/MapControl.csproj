@@ -13,6 +13,10 @@
 	    <Version>0.5.0</Version>
 	    <Copyright>original Copyright © 2022 Clemens Fischer, modifications Copyright © Mark A. Olbert</Copyright>
     </PropertyGroup>
+    <ItemGroup>
+      <Compile Remove="MapBase.WinUI.cs" />
+      <Compile Remove="MapPanel.WinUI.cs" />
+    </ItemGroup>
 
     <ItemGroup>
       <None Remove="PushpinBorder.xaml" />

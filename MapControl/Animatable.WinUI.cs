@@ -9,42 +9,42 @@ namespace J4JSoftware.XamlMapControl
 {
     internal static class Animatable
     {
-        public static void BeginAnimation(this DependencyObject obj, DependencyProperty property, Timeline animation)
+        public static void BeginAnimation(this DependencyObject obj, DependencyProperty property, Timeline? animation)
         {
-            if (animation != null)
-            {
-                string propertyName = null;
+            if( animation == null )
+                return;
 
-                if (property == MapBase.CenterPointProperty)
-                {
-                    propertyName = "CenterPoint";
-                    ((PointAnimation)animation).EnableDependentAnimation = true;
-                }
-                else if (property == MapBase.ZoomLevelProperty)
+            string? propertyName = null;
+
+            if (property == MapBase.CenterPointProperty)
+            {
+                propertyName = "CenterPoint";
+                ((PointAnimation)animation).EnableDependentAnimation = true;
+            }
+            else if (property == MapBase.ZoomLevelProperty)
                 {
                     propertyName = "ZoomLevel";
                     ((DoubleAnimation)animation).EnableDependentAnimation = true;
                 }
                 else if (property == MapBase.HeadingProperty)
-                {
-                    propertyName = "Heading";
-                    ((DoubleAnimation)animation).EnableDependentAnimation = true;
-                }
-                else if (property == UIElement.OpacityProperty)
-                {
-                    propertyName = "Opacity";
-                }
+                    {
+                        propertyName = "Heading";
+                        ((DoubleAnimation)animation).EnableDependentAnimation = true;
+                    }
+                    else if (property == UIElement.OpacityProperty)
+                    {
+                        propertyName = "Opacity";
+                    }
 
-                if (propertyName != null)
-                {
-                    Storyboard.SetTargetProperty(animation, propertyName);
-                    Storyboard.SetTarget(animation, obj);
+            if( propertyName == null )
+                return;
 
-                    var storyboard = new Storyboard();
-                    storyboard.Children.Add(animation);
-                    storyboard.Begin();
-                }
-            }
+            Storyboard.SetTargetProperty(animation, propertyName);
+            Storyboard.SetTarget(animation, obj);
+
+            var storyboard = new Storyboard();
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
         }
     }
 }
