@@ -13,6 +13,9 @@
 	    <Version>0.5.0</Version>
 	    <Copyright>original Copyright © 2022 Clemens Fischer, modifications Copyright © Mark A. Olbert</Copyright>
     </PropertyGroup>
+    <ItemGroup>
+      <Compile Remove="SQLiteCache.WinUI.cs" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
