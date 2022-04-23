@@ -19,7 +19,7 @@ namespace MapControl.Caching
         private const string valueField = "Value";
         private const string expiresField = "Expires";
 
-        private readonly FileDb fileDb = new FileDb { AutoFlush = true };
+        private readonly FileDb fileDb = new() { AutoFlush = true };
 
         public FileDbCache(string path)
         {
@@ -64,12 +64,13 @@ namespace MapControl.Caching
             catch
             {
                 if (File.Exists(path))
-                {
                     File.Delete(path);
-                }
                 else
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+                    var dir = Path.GetDirectoryName(path);
+
+                    if( !string.IsNullOrEmpty( dir ) )
+                        Directory.CreateDirectory( dir );
                 }
 
                 fileDb.Create(path, new Field[]
@@ -83,7 +84,7 @@ namespace MapControl.Caching
             }
         }
 
-        private Record GetRecordByKey(string key)
+        private Record? GetRecordByKey(string key)
         {
             try
             {
@@ -97,15 +98,16 @@ namespace MapControl.Caching
             return null;
         }
 
-        private void AddOrUpdateRecord(string key, byte[] buffer, DateTime expiration)
+        private void AddOrUpdateRecord(string key, byte[]? buffer, DateTime expiration)
         {
-            var fieldValues = new FieldValues(3);
-            fieldValues.Add(valueField, buffer ?? new byte[0]);
-            fieldValues.Add(expiresField, expiration);
+            var fieldValues = new FieldValues(3)
+                {
+                    { valueField, buffer ?? Array.Empty<byte>() }, { expiresField, expiration }
+                };
 
             try
             {
-                if (fileDb.GetRecordByKey(key, new string[0], false) != null)
+                if (fileDb.GetRecordByKey(key, Array.Empty<string>(), false) != null)
                 {
                     fileDb.UpdateRecordByKey(key, fieldValues);
                 }
