@@ -13,23 +13,23 @@ namespace J4JSoftware.XamlMapControl.WinUIApp
 {
     public static class HyperlinkText
     {
-        private static readonly Regex regex = new Regex(@"\[([^\]]+)\]\(([^\)]+)\)");
+        private static readonly Regex Regex = new(@"\[([^\]]+)\]\(([^\)]+)\)");
 
         /// <summary>
         /// Converts text containing hyperlinks in markdown syntax [text](url)
         /// to a collection of Run and Hyperlink inlines.
         /// </summary>
-        public static IEnumerable<Inline> TextToInlines(this string text)
+        public static IEnumerable<Inline> TextToInlines(this string? text)
         {
             var inlines = new List<Inline>();
 
             while (!string.IsNullOrEmpty(text))
             {
-                var match = regex.Match(text);
+                var match = Regex.Match(text);
 
                 if (match.Success &&
                     match.Groups.Count == 3 &&
-                    Uri.TryCreate(match.Groups[2].Value, UriKind.Absolute, out Uri uri))
+                    Uri.TryCreate(match.Groups[2].Value, UriKind.Absolute, out Uri? uri))
                 {
                     inlines.Add(new Run { Text = text.Substring(0, match.Index) });
                     text = text.Substring(match.Index + match.Length);
@@ -63,25 +63,21 @@ namespace J4JSoftware.XamlMapControl.WinUIApp
 
         private static void InlinesSourcePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            InlineCollection inlines = null;
-
-            if (obj is TextBlock block)
+            InlineCollection? inlines = obj switch
             {
-                inlines = block.Inlines;
-            }
-            else if (obj is Paragraph paragraph)
-            {
-                inlines = paragraph.Inlines;
-            }
+                TextBlock block => block.Inlines,
+                Paragraph paragraph => paragraph.Inlines,
+                _ => null
+            };
 
-            if (inlines != null)
-            {
-                inlines.Clear();
+            if( inlines == null )
+                return;
 
-                foreach (var inline in TextToInlines((string)e.NewValue))
-                {
-                    inlines.Add(inline);
-                }
+            inlines.Clear();
+
+            foreach (var inline in TextToInlines((string)e.NewValue))
+            {
+                inlines.Add(inline);
             }
         }
     }

@@ -125,7 +125,7 @@ public class MapLayersMenuButton : MenuButton
     {
         foreach (var item in GetMenuItems())
         {
-            item.IsChecked = Map.Children.Contains((UIElement)item.Tag);
+            item.IsChecked = Map!.Children.Contains((UIElement)item.Tag);
         }
     }
 }

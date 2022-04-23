@@ -602,7 +602,7 @@ public class MapBase : MapPanel
     /// <summary>
     /// Transforms a Rect in view coordinates to a BoundingBox in geographic coordinates.
     /// </summary>
-    public BoundingBox ViewRectToBoundingBox(Rect rect)
+    public BoundingBox? ViewRectToBoundingBox(Rect rect)
     {
         var p1 = ViewTransform.ViewToMap(new Point(rect.X, rect.Y));
         var p2 = ViewTransform.ViewToMap(new Point(rect.X, rect.Y + rect.Height));

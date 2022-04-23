@@ -92,7 +92,9 @@ namespace J4JSoftware.XamlMapControl.WinUIApp
             Activated -= WindowActivated;
 
             await Task.Delay(2000);
-            await ((ImageFileCache)TileImageLoader.Cache).Clean();
+
+            if( TileImageLoader.Cache != null )
+                await ((ImageFileCache)TileImageLoader.Cache).Clean();
         }
 
         private void ResetHeadingButtonClick(object sender, RoutedEventArgs e)

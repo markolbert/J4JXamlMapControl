@@ -54,6 +54,9 @@ public class MapGraticule : MapOverlay
             var maxLatitude = maxLocation != null && maxLocation.Latitude < 90d ? maxLocation.Latitude : 90d;
 
             var bounds = map.ViewRectToBoundingBox(new Rect(0d, 0d, map.RenderSize.Width, map.RenderSize.Height));
+            if( bounds == null )
+                return;
+
             var lineDistance = GetLineDistance();
 
             var labelStart = new Location(

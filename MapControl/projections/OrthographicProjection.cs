@@ -40,7 +40,7 @@ public class OrthographicProjection : AzimuthalProjection
             Wgs84EquatorialRadius * (Math.Cos(lat0) * Math.Sin(lat) - Math.Sin(lat0) * Math.Cos(lat) * Math.Cos(dLon)));
     }
 
-    public override Location MapToLocation(Point point)
+    public override Location? MapToLocation(Point point)
     {
         if (point.X == 0d && point.Y == 0d)
         {
@@ -52,9 +52,7 @@ public class OrthographicProjection : AzimuthalProjection
         var r2 = x * x + y * y;
 
         if (r2 > 1d)
-        {
             return null;
-        }
 
         var r = Math.Sqrt(r2);
         var sinC = r;

@@ -2,6 +2,7 @@
 // © 2022 Clemens Fischer
 // Licensed under the Microsoft Public License (Ms-PL)
 
+using System;
 using System.Collections.Generic;
 
 namespace J4JSoftware.XamlMapControl.Projections;
@@ -24,7 +25,7 @@ public class GeoApiProjectionFactory : MapProjectionFactory
 
     public Dictionary<int, string> CoordinateSystemWkts { get; } = new Dictionary<int, string>();
 
-    public override MapProjection? GetProjection(string crsId)
+    public override MapProjection GetProjection(string crsId)
     {
         MapProjection? projection = null;
 
