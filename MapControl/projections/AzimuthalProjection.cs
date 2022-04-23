@@ -26,7 +26,7 @@ public abstract class AzimuthalProjection : MapProjection
         return new Rect(center.X - width / 2d, center.Y - height / 2d, width, height);
     }
 
-    public override BoundingBox RectToBoundingBox(Rect rect)
+    public override BoundingBox? RectToBoundingBox(Rect rect)
     {
         var center = MapToLocation(new Point(rect.X + rect.Width / 2d, rect.Y + rect.Height / 2d));
         var width = rect.Width / Wgs84MeterPerDegree;

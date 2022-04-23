@@ -68,7 +68,7 @@ public abstract class MapProjection
     /// Transforms a Rect in cartesian map coordinates to a BoundingBox in geographic coordinates.
     /// Returns null when the Rect can not be transformed.
     /// </summary>
-    public virtual BoundingBox RectToBoundingBox(Rect rect)
+    public virtual BoundingBox? RectToBoundingBox(Rect rect)
     {
         var sw = MapToLocation(new Point(rect.X, rect.Y));
         var ne = MapToLocation(new Point(rect.X + rect.Width, rect.Y + rect.Height));

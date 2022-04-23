@@ -30,8 +30,11 @@ public class EquirectangularProjection : MapProjection
             1d);
     }
 
-    public override Point LocationToMap(Location location)
+    public override Point LocationToMap(Location? location)
     {
+        if( location == null )
+            return new Point();
+
         return new Point(
             Wgs84MeterPerDegree * location.Longitude,
             Wgs84MeterPerDegree * location.Latitude);

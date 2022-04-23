@@ -19,9 +19,9 @@ public class OrthographicProjection : AzimuthalProjection
         CrsId = DefaultCrsId;
     }
 
-    public override Point LocationToMap(Location location)
+    public override Point LocationToMap(Location? location)
     {
-        if (location.Equals(Center))
+        if (location==null || location.Equals(Center))
         {
             return new Point();
         }

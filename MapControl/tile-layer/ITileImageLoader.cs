@@ -5,6 +5,6 @@ namespace J4JSoftware.XamlMapControl;
 
 public interface ITileImageLoader
 {
-    TileSource TileSource { get; }
-    Task LoadTiles(IEnumerable<Tile> tiles, TileSource tileSource, string cacheName);
+    TileSource? TileSource { get; }
+    Task LoadTiles(IEnumerable<Tile> tiles, TileSource? tileSource, string cacheName);
 }

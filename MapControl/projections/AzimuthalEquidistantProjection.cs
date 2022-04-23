@@ -17,12 +17,10 @@ public class AzimuthalEquidistantProjection : AzimuthalProjection
         CrsId = crsId;
     }
 
-    public override Point LocationToMap(Location location)
+    public override Point LocationToMap(Location? location)
     {
-        if (location.Equals(Center))
-        {
+        if (location == null || location.Equals(Center))
             return new Point();
-        }
 
         GetAzimuthDistance(Center, location, out double azimuth, out double distance);
 

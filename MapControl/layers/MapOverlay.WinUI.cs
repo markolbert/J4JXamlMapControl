@@ -2,17 +2,14 @@
 // © 2022 Clemens Fischer
 // Licensed under the Microsoft Public License (Ms-PL)
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.Storage.Streams;
+using Windows.UI.Text;
+using Microsoft.UI.Text;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace J4JSoftware.XamlMapControl
 {
-    public static partial class ImageLoader
+    public partial class MapOverlay
     {
     }
 }

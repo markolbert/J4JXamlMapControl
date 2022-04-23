@@ -5,14 +5,12 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.Storage.Streams;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace J4JSoftware.XamlMapControl
 {
-    public static partial class ImageLoader
+    public partial class TileImageLoader
     {
     }
 }

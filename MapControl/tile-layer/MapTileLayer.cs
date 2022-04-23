@@ -28,7 +28,7 @@ public class MapTileLayer : MapTileLayerBase
     /// A default MapTileLayer using OpenStreetMap data.
     /// </summary>
     public static MapTileLayer OpenStreetMapTileLayer =>
-        new MapTileLayer
+        new()
         {
             TileSource = new TileSource { UriFormat = "https://tile.openstreetmap.org/{z}/{x}/{y}.png" },
             SourceName = "OpenStreetMap",

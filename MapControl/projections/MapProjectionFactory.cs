@@ -6,9 +6,9 @@ namespace J4JSoftware.XamlMapControl.Projections;
 
 public class MapProjectionFactory
 {
-    public virtual MapProjection GetProjection(string crsId)
+    public virtual MapProjection? GetProjection(string crsId)
     {
-        MapProjection projection = null;
+        MapProjection? projection = null;
 
         switch (crsId)
         {

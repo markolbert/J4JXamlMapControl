@@ -21,8 +21,11 @@ public class AutoEquirectangularProjection : MapProjection
         CrsId = DefaultCrsId;
     }
 
-    public override Point LocationToMap(Location location)
+    public override Point LocationToMap(Location? location)
     {
+        if( location == null )
+            return new Point();
+
         return new Point(
             Wgs84MeterPerDegree * (location.Longitude - Center.Longitude) * Math.Cos(Center.Latitude * Math.PI / 180d),
             Wgs84MeterPerDegree * location.Latitude);

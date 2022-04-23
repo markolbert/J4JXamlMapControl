@@ -11,48 +11,5 @@ namespace J4JSoftware.XamlMapControl
 {
     public partial class Tile
     {
-        public void SetImage(ImageSource image, bool fadeIn = true)
-        {
-            Pending = false;
-
-            if (image != null && fadeIn && MapBase.ImageFadeDuration > TimeSpan.Zero)
-            {
-                if (image is BitmapImage bitmap && bitmap.UriSource != null)
-                {
-                    bitmap.ImageOpened += BitmapImageOpened;
-                    bitmap.ImageFailed += BitmapImageFailed;
-                }
-                else
-                {
-                    FadeIn();
-                }
-            }
-            else
-            {
-                Image.Opacity = 1d;
-            }
-
-            Image.Source = image;
-        }
-
-        private void BitmapImageOpened(object sender, RoutedEventArgs e)
-        {
-            var bitmap = (BitmapImage)sender;
-
-            bitmap.ImageOpened -= BitmapImageOpened;
-            bitmap.ImageFailed -= BitmapImageFailed;
-
-            FadeIn();
-        }
-
-        private void BitmapImageFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            var bitmap = (BitmapImage)sender;
-
-            bitmap.ImageOpened -= BitmapImageOpened;
-            bitmap.ImageFailed -= BitmapImageFailed;
-
-            Image.Source = null;
-        }
     }
 }

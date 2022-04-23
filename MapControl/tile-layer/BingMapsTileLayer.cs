@@ -36,11 +36,11 @@ namespace J4JSoftware.XamlMapControl
             Loaded += OnLoaded;
         }
 
-        public static string ApiKey { get; set; }
+        public static string? ApiKey { get; set; }
 
         public MapMode Mode { get; set; }
-        public string Culture { get; set; }
-        public Uri LogoImageUri { get; private set; }
+        public string? Culture { get; set; }
+        public Uri? LogoImageUri { get; private set; }
 
         private async void OnLoaded(object sender, RoutedEventArgs args)
         {
@@ -52,10 +52,9 @@ namespace J4JSoftware.XamlMapControl
 
                 try
                 {
-                    using (var stream = await ImageLoader.HttpClient.GetStreamAsync(metadataUri))
-                    {
-                        ReadImageryMetadata(XDocument.Load(stream).Root);
-                    }
+                    await using var stream = await ImageLoader.HttpClient.GetStreamAsync(metadataUri);
+
+                    ReadImageryMetadata(XDocument.Load(stream).Root);
                 }
                 catch (Exception ex)
                 {
@@ -68,8 +67,11 @@ namespace J4JSoftware.XamlMapControl
             }
         }
 
-        private void ReadImageryMetadata(XElement metadataResponse)
+        private void ReadImageryMetadata(XElement? metadataResponse)
         {
+            if( metadataResponse == null )
+                return;
+
             var ns = metadataResponse.Name.Namespace;
             var metadata = metadataResponse.Descendants(ns + "ImageryMetadata").FirstOrDefault();
 

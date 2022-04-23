@@ -14,10 +14,18 @@
 	    <Copyright>original Copyright © 2022 Clemens Fischer, modifications Copyright © Mark A. Olbert</Copyright>
     </PropertyGroup>
     <ItemGroup>
+      <Compile Remove="GeoImage.WinUI.cs" />
+      <Compile Remove="ImageFileCache.WinUI.cs" />
+      <Compile Remove="ImageLoader.WinUI.cs" />
+      <Compile Remove="layers\MapOverlay.WinUI.cs" />
+      <Compile Remove="MapGraticule.WinUI.cs" />
       <Compile Remove="paths\MapPath.WinUI.cs" />
       <Compile Remove="MapBase.WinUI.cs" />
       <Compile Remove="MapItemsControl.WinUI.cs" />
       <Compile Remove="MapPanel.WinUI.cs" />
+      <Compile Remove="PushpinBorder.WinUI.cs" />
+      <Compile Remove="Tile.WinUI.cs" />
+      <Compile Remove="tiles\TileImageLoader.WinUI.cs" />
     </ItemGroup>
 
     <ItemGroup>

@@ -27,11 +27,12 @@ public class WebMercatorProjection : MapProjection
         return new Vector(k, k);
     }
 
-    public override Point LocationToMap(Location location)
+    public override Point LocationToMap(Location? location)
     {
-        return new Point(
-            Wgs84MeterPerDegree * location.Longitude,
-            Wgs84MeterPerDegree * LatitudeToY(location.Latitude));
+        return location == null
+            ? new Point()
+            : new Point( Wgs84MeterPerDegree * location.Longitude,
+                         Wgs84MeterPerDegree * LatitudeToY( location.Latitude ) );
     }
 
     public override Location MapToLocation(Point point)
