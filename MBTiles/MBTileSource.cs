@@ -5,7 +5,6 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using MapControl.MBTiles;
 using Microsoft.UI.Xaml.Media;
 
 namespace J4JSoftware.XamlMapControl.MBTiles;
