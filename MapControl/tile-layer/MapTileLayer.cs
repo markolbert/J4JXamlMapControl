@@ -181,10 +181,12 @@ public class MapTileLayer : MapTileLayerBase
         var xMax = (int)Math.Floor((bounds.X + bounds.Width) / TileSize);
         var yMax = (int)Math.Floor((bounds.Y + bounds.Height) / TileSize);
 
-        if (TileMatrix != null &&
-            TileMatrix.ZoomLevel == tileMatrixZoomLevel &&
-            TileMatrix.XMin == xMin && TileMatrix.YMin == yMin &&
-            TileMatrix.XMax == xMax && TileMatrix.YMax == yMax)
+        if( TileMatrix != null
+        && TileMatrix.ZoomLevel == tileMatrixZoomLevel
+        && TileMatrix.XMin == xMin
+        && TileMatrix.YMin == yMin
+        && TileMatrix.XMax == xMax
+        && TileMatrix.YMax == yMax )
         {
             return false;
         }

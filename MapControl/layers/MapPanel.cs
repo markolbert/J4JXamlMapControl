@@ -100,29 +100,10 @@ public class MapPanel : Panel, IMapElement
         set => SetParentMap( value );
     }
 
-    public static MapBase? GetParentMap( FrameworkElement element )
+    private static void ParentMapPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
     {
-        var parentMap = element.GetValue( ParentMapProperty ) as MapBase;
-
-        if( parentMap == null && ( parentMap = FindParentMap( element ) ) != null )
-            element.SetValue( ParentMapProperty, parentMap );
-
-        return parentMap;
-    }
-
-    private static MapBase? FindParentMap( FrameworkElement element )
-    {
-        if( VisualTreeHelper.GetParent( element ) is not FrameworkElement parent )
-            return null;
-
-        var parentMap = parent as MapBase;
-        if( parentMap != null )
-            return parentMap;
-
-        if( element.GetValue( ParentMapProperty ) is MapBase temp )
-            return temp;
-
-        return FindParentMap( parent );
+        if (obj is IMapElement mapElement)
+            mapElement.ParentMap = e.NewValue as MapBase;
     }
 
     #endregion
@@ -163,6 +144,31 @@ public class MapPanel : Panel, IMapElement
             element.Loaded += ( _, _ ) => GetParentMap( element );
             element.Unloaded += ( _, _ ) => element.ClearValue( ParentMapProperty );
         }
+    }
+
+    public static MapBase? GetParentMap(FrameworkElement element)
+    {
+        var parentMap = element.GetValue(ParentMapProperty) as MapBase;
+
+        if (parentMap == null && (parentMap = FindParentMap(element)) != null)
+            element.SetValue(ParentMapProperty, parentMap);
+
+        return parentMap;
+    }
+
+    private static MapBase? FindParentMap(FrameworkElement element)
+    {
+        if (VisualTreeHelper.GetParent(element) is not FrameworkElement parent)
+            return null;
+
+        var parentMap = parent as MapBase;
+        if (parentMap != null)
+            return parentMap;
+
+        if (element.GetValue(ParentMapProperty) is MapBase temp)
+            return temp;
+
+        return FindParentMap(parent);
     }
 
     /// <summary>
@@ -308,7 +314,7 @@ public class MapPanel : Panel, IMapElement
          || point.Y > _parentMap.RenderSize.Height;
     }
 
-    private static void ArrangeElement( FrameworkElement element, ViewRect rect )
+    private void ArrangeElement( FrameworkElement element, ViewRect rect )
     {
         element.Width = rect.Width;
         element.Height = rect.Height;
@@ -326,7 +332,7 @@ public class MapPanel : Panel, IMapElement
             }
     }
 
-    private static void ArrangeElement( FrameworkElement element, Point position )
+    private void ArrangeElement( FrameworkElement element, Point position )
     {
         var rect = new Rect( position, element.DesiredSize );
 
@@ -357,7 +363,7 @@ public class MapPanel : Panel, IMapElement
         ArrangeElement( element, rect );
     }
 
-    private static void ArrangeElement( FrameworkElement element, Size parentSize )
+    private void ArrangeElement( FrameworkElement element, Size parentSize )
     {
         var rect = new Rect( new Point(), element.DesiredSize );
 
@@ -396,7 +402,7 @@ public class MapPanel : Panel, IMapElement
         ArrangeElement( element, rect );
     }
 
-    private static void ArrangeElement( FrameworkElement element, Rect rect )
+    private void ArrangeElement( FrameworkElement element, Rect rect )
     {
         if( element.UseLayoutRounding )
         {
@@ -407,13 +413,5 @@ public class MapPanel : Panel, IMapElement
         }
 
         element.Arrange( rect );
-    }
-
-    private static void ParentMapPropertyChanged( DependencyObject obj, DependencyPropertyChangedEventArgs e )
-    {
-        if( obj is IMapElement mapElement )
-        {
-            mapElement.ParentMap = e.NewValue as MapBase;
-        }
     }
 }
