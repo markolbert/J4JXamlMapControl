@@ -3,57 +3,52 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using ProjNet.CoordinateSystems;
-using System.Windows;
-using J4JSoftware.XamlMapControl;
 
-namespace MapControl.Projections
+namespace J4JSoftware.XamlMapControl.Projections;
+
+public class AutoUtmProjection : GeoApiProjection
 {
-    public class AutoUtmProjection : GeoApiProjection
+    public const string DefaultCrsId = "AUTO2:42001";
+
+    public int ZoneNumber { get; private set; }
+    public bool ZoneIsNorth { get; private set; }
+
+    public AutoUtmProjection()
     {
-        public const string DefaultCrsId = "AUTO2:42001";
+        UpdateZone();
+    }
 
-        public int ZoneNumber { get; private set; }
-        public bool ZoneIsNorth { get; private set; }
+    public bool UseZoneCrsId { get; set; }
 
-        public AutoUtmProjection()
-        {
-            UpdateZone();
-        }
+    public override Point LocationToMap(Location? location)
+    {
+        UpdateZone();
 
-        public bool UseZoneCrsId { get; set; }
+        return base.LocationToMap(location);
+    }
 
-        public override Point LocationToMap(Location location)
-        {
-            UpdateZone();
+    public override Location MapToLocation(Point point)
+    {
+        UpdateZone();
 
-            return base.LocationToMap(location);
-        }
+        return base.MapToLocation(point);
+    }
 
-        public override Location MapToLocation(Point point)
-        {
-            UpdateZone();
+    private void UpdateZone()
+    {
+        var north = Center.Latitude >= 0d;
+        var lon = Location.NormalizeLongitude(Center.Longitude);
+        var zone = (int)(lon + 180d) / 6 + 1;
 
-            return base.MapToLocation(point);
-        }
+        if( ZoneNumber == zone && ZoneIsNorth == north )
+            return;
 
-        private void UpdateZone()
-        {
-            var north = Center.Latitude >= 0d;
-            var lon = Location.NormalizeLongitude(Center.Longitude);
-            var zone = (int)(lon + 180d) / 6 + 1;
+        ZoneNumber = zone;
+        ZoneIsNorth = north;
 
-            if (ZoneNumber != zone || ZoneIsNorth != north)
-            {
-                ZoneNumber = zone;
-                ZoneIsNorth = north;
+        CoordinateSystem = ProjectedCoordinateSystem.WGS84_UTM(ZoneNumber, ZoneIsNorth);
 
-                CoordinateSystem = ProjectedCoordinateSystem.WGS84_UTM(ZoneNumber, ZoneIsNorth);
-
-                if (!UseZoneCrsId)
-                {
-                    CrsId = DefaultCrsId;
-                }
-            }
-        }
+        if (!UseZoneCrsId)
+            CrsId = DefaultCrsId;
     }
 }

@@ -3,88 +3,82 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using System.Collections.Generic;
-using MapControl.Projections;
 
-namespace J4JSoftware.XamlMapControl.Projections
+namespace J4JSoftware.XamlMapControl.Projections;
+
+public class GeoApiProjectionFactory : MapProjectionFactory
 {
-    public class GeoApiProjectionFactory : MapProjectionFactory
+    public const int WorldMercator = 3395;
+    public const int WebMercator = 3857;
+    public const int AutoUtm = 42001;
+    public const int Ed50UtmFirst = 23028;
+    public const int Ed50UtmLast = 23038;
+    public const int Etrs89UtmFirst = 25828;
+    public const int Etrs89UtmLast = 25838;
+    public const int Wgs84UtmNorthFirst = 32601;
+    public const int Wgs84UtmNorthLast = 32660;
+    public const int Wgs84UpsNorth = 32661;
+    public const int Wgs84UtmSouthFirst = 32701;
+    public const int Wgs84UtmSouthLast = 32760;
+    public const int Wgs84UpsSouth = 32761;
+
+    public Dictionary<int, string> CoordinateSystemWkts { get; } = new Dictionary<int, string>();
+
+    public override MapProjection? GetProjection(string crsId)
     {
-        public const int WorldMercator = 3395;
-        public const int WebMercator = 3857;
-        public const int AutoUtm = 42001;
-        public const int Ed50UtmFirst = 23028;
-        public const int Ed50UtmLast = 23038;
-        public const int Etrs89UtmFirst = 25828;
-        public const int Etrs89UtmLast = 25838;
-        public const int Wgs84UtmNorthFirst = 32601;
-        public const int Wgs84UtmNorthLast = 32660;
-        public const int Wgs84UpsNorth = 32661;
-        public const int Wgs84UtmSouthFirst = 32701;
-        public const int Wgs84UtmSouthLast = 32760;
-        public const int Wgs84UpsSouth = 32761;
+        MapProjection? projection = null;
 
-        public Dictionary<int, string> CoordinateSystemWkts { get; } = new Dictionary<int, string>();
+        var str = crsId.StartsWith("EPSG:") ? crsId.Substring(5)
+            : crsId.StartsWith("AUTO2:") ? crsId.Substring(6)
+            : null;
 
-        public override MapProjection GetProjection(string crsId)
+        if( !int.TryParse( str, out int code ) )
+            return base.GetProjection( crsId );
+
+        if (CoordinateSystemWkts.TryGetValue(code, out string? wkt))
+            projection = new GeoApiProjection(wkt);
+        else
         {
-            MapProjection projection = null;
-            var str = crsId.StartsWith("EPSG:") ? crsId.Substring(5)
-                    : crsId.StartsWith("AUTO2:") ? crsId.Substring(6)
-                    : null;
-
-            if (int.TryParse(str, out int code))
+            switch (code)
             {
-                if (CoordinateSystemWkts.TryGetValue(code, out string wkt))
-                {
-                    projection = new GeoApiProjection(wkt);
-                }
-                else
-                {
-                    switch (code)
-                    {
-                        case WorldMercator:
-                            projection = new MapControl.Projections.WorldMercatorProjection();
-                            break;
+                case WorldMercator:
+                    projection = new WorldMercatorProjectionNG();
+                    break;
 
-                        case WebMercator:
-                            projection = new MapControl.Projections.WebMercatorProjection();
-                            break;
+                case WebMercator:
+                    projection = new WebMercatorProjectionNG();
+                    break;
 
-                        case AutoUtm:
-                            projection = new AutoUtmProjection();
-                            break;
+                case AutoUtm:
+                    projection = new AutoUtmProjection();
+                    break;
 
-                        case int c when c >= Ed50UtmFirst && c <= Ed50UtmLast:
-                            projection = new Ed50UtmProjection(code % 100);
-                            break;
+                case <= Ed50UtmLast and >= Ed50UtmFirst:
+                    projection = new Ed50UtmProjection(code % 100);
+                    break;
 
-                        case int c when c >= Etrs89UtmFirst && c <= Etrs89UtmLast:
-                            projection = new Etrs89UtmProjection(code % 100);
-                            break;
+                case <= Etrs89UtmLast and >= Etrs89UtmFirst:
+                    projection = new Etrs89UtmProjection(code % 100);
+                    break;
 
-                        case int c when c >= Wgs84UtmNorthFirst && c <= Wgs84UtmNorthLast:
-                            projection = new Wgs84UtmProjection(code % 100, true);
-                            break;
+                case <= Wgs84UtmNorthLast and >= Wgs84UtmNorthFirst:
+                    projection = new Wgs84UtmProjection(code % 100, true);
+                    break;
 
-                        case int c when c >= Wgs84UtmSouthFirst && c <= Wgs84UtmSouthLast:
-                            projection = new Wgs84UtmProjection(code % 100, false);
-                            break;
+                case <= Wgs84UtmSouthLast and >= Wgs84UtmSouthFirst:
+                    projection = new Wgs84UtmProjection(code % 100, false);
+                    break;
 
-                        case Wgs84UpsNorth:
-                            projection = new UpsNorthProjection();
-                            break;
+                case Wgs84UpsNorth:
+                    projection = new UpsNorthProjection();
+                    break;
 
-                        case Wgs84UpsSouth:
-                            projection = new UpsSouthProjection();
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
+                case Wgs84UpsSouth:
+                    projection = new UpsSouthProjection();
+                    break;
             }
-
-            return projection ?? base.GetProjection(crsId);
         }
+
+        return projection ?? base.GetProjection(crsId);
     }
 }

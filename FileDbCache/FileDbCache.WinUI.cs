@@ -8,26 +8,7 @@ using J4JSoftware.XamlMapControl.Caching;
 
 namespace MapControl.Caching
 {
-    public partial class FileDbCache : IImageCache
+    public partial class FileDbCache 
     {
-        public Task<Tuple<byte[], DateTime>> GetAsync(string key)
-        {
-            return Task.Run(() =>
-            {
-                var record = GetRecordByKey(key);
-
-                if (record == null)
-                {
-                    return null;
-                }
-
-                return Tuple.Create((byte[])record[0], (DateTime)record[1]);
-            });
-        }
-
-        public Task SetAsync(string key, byte[] buffer, DateTime expiration)
-        {
-            return Task.Run(() => AddOrUpdateRecord(key, buffer, expiration));
-        }
     }
 }

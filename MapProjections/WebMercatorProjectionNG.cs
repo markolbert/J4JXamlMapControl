@@ -4,20 +4,17 @@
 
 using ProjNet.CoordinateSystems;
 using System;
-using J4JSoftware.XamlMapControl;
-#if !UWP
-using System.Windows;
-#endif
 
-namespace MapControl.Projections
+namespace J4JSoftware.XamlMapControl.Projections
 {
     /// <summary>
     /// Spherical Mercator Projection implemented by setting the CoordinateSystem property of a GeoApiProjection.
     /// See "Map Projections - A Working Manual" (https://pubs.usgs.gov/pp/1395/report.pdf), p.41-44.
     /// </summary>
-    public class WebMercatorProjection : GeoApiProjection
+    // ReSharper disable once InconsistentNaming
+    public class WebMercatorProjectionNG : GeoApiProjection
     {
-        public WebMercatorProjection()
+        public WebMercatorProjectionNG()
         {
             CoordinateSystem = ProjectedCoordinateSystem.WebMercator;
         }

@@ -6,121 +6,129 @@ using FileDbNs;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
+using J4JSoftware.XamlMapControl.Caching;
 
-namespace MapControl.Caching
+namespace MapControl.Caching;
+
+/// <summary>
+/// Image cache implementation based on FileDb, a free and simple No-SQL database by EzTools Software.
+/// See http://www.eztools-software.com/tools/filedb/.
+/// </summary>
+public sealed class FileDbCache : IImageCache, IDisposable
 {
-    /// <summary>
-    /// Image cache implementation based on FileDb, a free and simple No-SQL database by EzTools Software.
-    /// See http://www.eztools-software.com/tools/filedb/.
-    /// </summary>
-    public sealed partial class FileDbCache : IDisposable
+    private const string KeyField = "Key";
+    private const string ValueField = "Value";
+    private const string ExpiresField = "Expires";
+
+    private readonly FileDb _fileDb = new() { AutoFlush = true };
+
+    public FileDbCache( string path )
     {
-        private const string keyField = "Key";
-        private const string valueField = "Value";
-        private const string expiresField = "Expires";
+        if( string.IsNullOrEmpty( path ) )
+            throw new ArgumentException( "The path argument must not be null or empty.", nameof( path ) );
 
-        private readonly FileDb fileDb = new() { AutoFlush = true };
+        if( string.IsNullOrEmpty( Path.GetExtension( path ) ) )
+            path = Path.Combine( path, "TileCache.fdb" );
 
-        public FileDbCache(string path)
+        Open( path );
+    }
+
+    public Task<Tuple<byte[], DateTime>?> GetAsync( string key ) =>
+        Task.Run( () =>
         {
-            if (string.IsNullOrEmpty(path))
+            var record = GetRecordByKey( key );
+
+            return record == null
+                ? null
+                : Tuple.Create( (byte[]) record[ 0 ], (DateTime) record[ 1 ] );
+        } );
+
+    public Task SetAsync( string key, byte[] buffer, DateTime expiration ) =>
+        Task.Run( () => AddOrUpdateRecord( key, buffer, expiration ) );
+
+    public void Dispose() => _fileDb.Dispose();
+
+    public void Clean()
+    {
+        var deleted =
+            _fileDb.DeleteRecords(
+                new FilterExpression( ExpiresField, DateTime.UtcNow, ComparisonOperatorEnum.LessThan ) );
+
+        if( deleted <= 0 )
+            return;
+
+        Debug.WriteLine( $"FileDbCache: Deleted {deleted} expired items" );
+        _fileDb.Clean();
+    }
+
+    private void Open( string path )
+    {
+        try
+        {
+            _fileDb.Open( path );
+            Debug.WriteLine( $"FileDbCache: Opened database {path}" );
+
+            Clean();
+        }
+        catch
+        {
+            if( File.Exists( path ) )
+                File.Delete( path );
+            else
             {
-                throw new ArgumentException("The path argument must not be null or empty.", nameof(path));
+                var dir = Path.GetDirectoryName( path );
+
+                if( !string.IsNullOrEmpty( dir ) )
+                    Directory.CreateDirectory( dir );
             }
 
-            if (string.IsNullOrEmpty(Path.GetExtension(path)))
-            {
-                path = Path.Combine(path, "TileCache.fdb");
-            }
+            _fileDb.Create( path,
+                            new[]
+                            {
+                                new Field( KeyField, DataTypeEnum.String ) { IsPrimaryKey = true },
+                                new Field( ValueField, DataTypeEnum.Byte ) { IsArray = true },
+                                new Field( ExpiresField, DataTypeEnum.DateTime )
+                            } );
 
-            Open(path);
+            Debug.WriteLine( $"FileDbCache: Created database {path}" );
+        }
+    }
+
+    private Record? GetRecordByKey( string key )
+    {
+        try
+        {
+            return _fileDb.GetRecordByKey( key, new[] { ValueField, ExpiresField }, false );
+        }
+        catch( Exception ex )
+        {
+            Debug.WriteLine( $"FileDbCache.GetRecordByKey({key}): {ex.Message}" );
         }
 
-        public void Dispose()
+        return null;
+    }
+
+    private void AddOrUpdateRecord( string key, byte[]? buffer, DateTime expiration )
+    {
+        var fieldValues = new FieldValues( 3 )
         {
-            fileDb.Dispose();
-        }
+            { ValueField, buffer ?? Array.Empty<byte>() }, { ExpiresField, expiration }
+        };
 
-        public void Clean()
+        try
         {
-            var deleted = fileDb.DeleteRecords(new FilterExpression(expiresField, DateTime.UtcNow, ComparisonOperatorEnum.LessThan));
-
-            if (deleted > 0)
+            if( _fileDb.GetRecordByKey( key, Array.Empty<string>(), false ) != null )
+                _fileDb.UpdateRecordByKey( key, fieldValues );
+            else
             {
-                Debug.WriteLine($"FileDbCache: Deleted {deleted} expired items");
-                fileDb.Clean();
-            }
-        }
-
-        private void Open(string path)
-        {
-            try
-            {
-                fileDb.Open(path);
-                Debug.WriteLine($"FileDbCache: Opened database {path}");
-
-                Clean();
-            }
-            catch
-            {
-                if (File.Exists(path))
-                    File.Delete(path);
-                else
-                {
-                    var dir = Path.GetDirectoryName(path);
-
-                    if( !string.IsNullOrEmpty( dir ) )
-                        Directory.CreateDirectory( dir );
-                }
-
-                fileDb.Create(path, new Field[]
-                {
-                    new Field(keyField, DataTypeEnum.String) { IsPrimaryKey = true },
-                    new Field(valueField, DataTypeEnum.Byte) { IsArray = true },
-                    new Field(expiresField, DataTypeEnum.DateTime)
-                });
-
-                Debug.WriteLine($"FileDbCache: Created database {path}");
+                fieldValues.Add( KeyField, key );
+                _fileDb.AddRecord( fieldValues );
             }
         }
-
-        private Record? GetRecordByKey(string key)
+        catch( Exception ex )
         {
-            try
-            {
-                return fileDb.GetRecordByKey(key, new string[] { valueField, expiresField }, false);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"FileDbCache.GetRecordByKey({key}): {ex.Message}");
-            }
-
-            return null;
-        }
-
-        private void AddOrUpdateRecord(string key, byte[]? buffer, DateTime expiration)
-        {
-            var fieldValues = new FieldValues(3)
-                {
-                    { valueField, buffer ?? Array.Empty<byte>() }, { expiresField, expiration }
-                };
-
-            try
-            {
-                if (fileDb.GetRecordByKey(key, Array.Empty<string>(), false) != null)
-                {
-                    fileDb.UpdateRecordByKey(key, fieldValues);
-                }
-                else
-                {
-                    fieldValues.Add(keyField, key);
-                    fileDb.AddRecord(fieldValues);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"FileDbCache.AddOrUpdateRecord({key}): {ex.Message}");
-            }
+            Debug.WriteLine( $"FileDbCache.AddOrUpdateRecord({key}): {ex.Message}" );
         }
     }
 }

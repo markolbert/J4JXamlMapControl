@@ -3,13 +3,8 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using System;
-using J4JSoftware.XamlMapControl;
-using J4JSoftware.XamlMapControl.Projections;
-#if !UWP
-using System.Windows;
-#endif
 
-namespace MapControl.Projections
+namespace J4JSoftware.XamlMapControl.Projections
 {
     /// <summary>
     /// Elliptical Polar Stereographic Projection with a given scale factor at the pole and
@@ -50,8 +45,11 @@ namespace MapControl.Projections
             return new Vector(k, k);
         }
 
-        public override Point LocationToMap(Location location)
+        public override Point LocationToMap(Location? location)
         {
+            if( location == null)
+                return new Point();
+
             var lat = location.Latitude * Math.PI / 180d;
             var lon = location.Longitude * Math.PI / 180d;
 

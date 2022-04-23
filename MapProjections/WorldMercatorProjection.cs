@@ -3,20 +3,17 @@
 // Licensed under the Microsoft Public License (Ms-PL)
 
 using System;
-using J4JSoftware.XamlMapControl;
-#if !UWP
-using System.Windows;
-#endif
 
-namespace MapControl.Projections
+namespace J4JSoftware.XamlMapControl.Projections
 {
     /// <summary>
     /// Elliptical Mercator Projection implemented by setting the WKT property of a GeoApiProjection.
     /// See "Map Projections - A Working Manual" (https://pubs.usgs.gov/pp/1395/report.pdf), p.44-45.
     /// </summary>
-    public class WorldMercatorProjection : GeoApiProjection
+    // ReSharper disable once InconsistentNaming
+    public class WorldMercatorProjectionNG : GeoApiProjection
     {
-        public WorldMercatorProjection()
+        public WorldMercatorProjectionNG()
         {
             CoordinateSystemWkt
                 = "PROJCS[\"WGS 84 / World Mercator\","

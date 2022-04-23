@@ -10,80 +10,78 @@ using ProjNet.CoordinateSystems.Transformations;
 using System;
 using System.Globalization;
 using Windows.Foundation;
-using J4JSoftware.XamlMapControl;
-using J4JSoftware.XamlMapControl.Projections;
-using Location = J4JSoftware.XamlMapControl.Location;
-using Point = J4JSoftware.XamlMapControl.Point;
 
-namespace MapControl.Projections
+namespace J4JSoftware.XamlMapControl.Projections;
+
+/// <summary>
+/// MapProjection based on ProjNET4GeoApi.
+/// </summary>
+public class GeoApiProjection : MapProjection
 {
-    /// <summary>
-    /// MapProjection based on ProjNET4GeoApi.
-    /// </summary>
-    public class GeoApiProjection : MapProjection
+    private ICoordinateSystem? _coordinateSystem;
+    private double _scaleFactor;
+    private string? _bBoxFormat;
+
+    public GeoApiProjection(string coordinateSystemWkt)
     {
-        private ICoordinateSystem coordinateSystem;
-        private double scaleFactor;
-        private string bboxFormat;
+        CoordinateSystemWkt = coordinateSystemWkt;
+    }
 
-        protected GeoApiProjection()
-        {
-        }
+    protected GeoApiProjection()
+    {
+    }
 
-        public GeoApiProjection(string coordinateSystemWkt)
-        {
-            CoordinateSystemWkt = coordinateSystemWkt;
-        }
+    /// <summary>
+    /// Gets or sets an OGC Well-known text representation of a coordinate system,
+    /// i.e. a PROJCS[...] or GEOGCS[...] string as used by https://epsg.io or http://spatialreference.org.
+    /// Setting this property updates the CoordinateSystem property with an ICoordinateSystem created from the WKT string.
+    /// </summary>
+    public string? CoordinateSystemWkt
+    {
+        get => CoordinateSystem?.WKT ?? null;
+        protected set => CoordinateSystem = new CoordinateSystemFactory().CreateFromWkt(value);
+    }
 
-        /// <summary>
-        /// Gets or sets an OGC Well-known text representation of a coordinate system,
-        /// i.e. a PROJCS[...] or GEOGCS[...] string as used by https://epsg.io or http://spatialreference.org.
-        /// Setting this property updates the CoordinateSystem property with an ICoordinateSystem created from the WKT string.
-        /// </summary>
-        public string CoordinateSystemWkt
-        {
-            get { return CoordinateSystem?.WKT; }
-            protected set { CoordinateSystem = new CoordinateSystemFactory().CreateFromWkt(value); }
-        }
+    public IMathTransform? LocationToMapTransform { get; private set; }
+    public IMathTransform? MapToLocationTransform { get; private set; }
 
-        /// <summary>
-        /// Gets or sets the ICoordinateSystem of the MapProjection.
-        /// </summary>
-        public ICoordinateSystem CoordinateSystem
+    /// <summary>
+    /// Gets or sets the ICoordinateSystem of the MapProjection.
+    /// </summary>
+    public ICoordinateSystem? CoordinateSystem
+    {
+        get => _coordinateSystem;
+
+        protected set
         {
-            get { return coordinateSystem; }
-            protected set
+            _coordinateSystem = value ?? throw new ArgumentNullException(nameof(value));
+
+            var transformFactory = new CoordinateTransformationFactory();
+
+            LocationToMapTransform = transformFactory
+                                    .CreateFromCoordinateSystems(GeographicCoordinateSystem.WGS84, _coordinateSystem)
+                                    .MathTransform;
+
+            MapToLocationTransform = transformFactory
+                                    .CreateFromCoordinateSystems(_coordinateSystem, GeographicCoordinateSystem.WGS84)
+                                    .MathTransform;
+
+            CrsId = (!string.IsNullOrEmpty(_coordinateSystem.Authority) && _coordinateSystem.AuthorityCode > 0)
+                ? $"{_coordinateSystem.Authority}:{_coordinateSystem.AuthorityCode}"
+                : "";
+
+            var projection = (_coordinateSystem as IProjectedCoordinateSystem)?.Projection;
+
+            if (projection != null)
             {
-                coordinateSystem = value ?? throw new ArgumentNullException(nameof(value));
+                var centralMeridian = projection.GetParameter("central_meridian") ?? projection.GetParameter("longitude_of_origin");
+                var centralParallel = projection.GetParameter("central_parallel") ?? projection.GetParameter("latitude_of_origin");
+                var falseEasting = projection.GetParameter("false_easting");
+                var falseNorthing = projection.GetParameter("false_northing");
 
-                var transformFactory = new CoordinateTransformationFactory();
-
-                LocationToMapTransform = transformFactory
-                    .CreateFromCoordinateSystems(GeographicCoordinateSystem.WGS84, coordinateSystem)
-                    .MathTransform;
-
-                MapToLocationTransform = transformFactory
-                    .CreateFromCoordinateSystems(coordinateSystem, GeographicCoordinateSystem.WGS84)
-                    .MathTransform;
-
-                CrsId = (!string.IsNullOrEmpty(coordinateSystem.Authority) && coordinateSystem.AuthorityCode > 0)
-                    ? string.Format("{0}:{1}", coordinateSystem.Authority, coordinateSystem.AuthorityCode)
-                    : "";
-
-                var projection = (coordinateSystem as IProjectedCoordinateSystem)?.Projection;
-
-                if (projection != null)
-                {
-                    var centralMeridian = projection.GetParameter("central_meridian") ?? projection.GetParameter("longitude_of_origin");
-                    var centralParallel = projection.GetParameter("central_parallel") ?? projection.GetParameter("latitude_of_origin");
-                    var falseEasting = projection.GetParameter("false_easting");
-                    var falseNorthing = projection.GetParameter("false_northing");
-
-                    if (CrsId == "EPSG:3857")
-                    {
-                        Type = MapProjectionType.WebMercator;
-                    }
-                    else if (
+                if (CrsId == "EPSG:3857")
+                    Type = MapProjectionType.WebMercator;
+                else if (
                         (centralMeridian == null || centralMeridian.Value == 0d) &&
                         (centralParallel == null || centralParallel.Value == 0d) &&
                         (falseEasting == null || falseEasting.Value == 0d) &&
@@ -98,53 +96,45 @@ namespace MapControl.Projections
                         Type = MapProjectionType.TransverseCylindrical;
                     }
 
-                    scaleFactor = 1d;
-                    bboxFormat = "{0},{1},{2},{3}";
-                }
-                else
-                {
-                    Type = MapProjectionType.NormalCylindrical;
-                    scaleFactor = Wgs84MeterPerDegree;
-                    bboxFormat = "{1},{0},{3},{2}";
-                }
+                _scaleFactor = 1d;
+                _bBoxFormat = "{0},{1},{2},{3}";
             }
-        }
-
-        public IMathTransform LocationToMapTransform { get; private set; }
-
-        public IMathTransform MapToLocationTransform { get; private set; }
-
-        public override Point LocationToMap(Location location)
-        {
-            if (LocationToMapTransform == null)
+            else
             {
-                throw new InvalidOperationException("The CoordinateSystem property is not set.");
+                Type = MapProjectionType.NormalCylindrical;
+                _scaleFactor = Wgs84MeterPerDegree;
+                _bBoxFormat = "{1},{0},{3},{2}";
             }
-
-            var coordinate = LocationToMapTransform.Transform(
-                new Coordinate(location.Longitude, location.Latitude));
-
-            return new Point(coordinate.X * scaleFactor, coordinate.Y * scaleFactor);
-        }
-
-        public override Location MapToLocation(Point point)
-        {
-            if (MapToLocationTransform == null)
-            {
-                throw new InvalidOperationException("The CoordinateSystem property is not set.");
-            }
-
-            var coordinate = MapToLocationTransform.Transform(
-                new Coordinate(point.X / scaleFactor, point.Y / scaleFactor));
-
-            return new Location(coordinate.Y, coordinate.X);
-        }
-
-        public override string GetBboxValue(Rect rect)
-        {
-            return string.Format(CultureInfo.InvariantCulture, bboxFormat,
-                rect.X / scaleFactor, rect.Y / scaleFactor,
-                (rect.X + rect.Width) / scaleFactor, (rect.Y + rect.Height) / scaleFactor);
         }
     }
+
+    public override Point LocationToMap(Location? location)
+    {
+        if (LocationToMapTransform == null)
+            throw new InvalidOperationException("The CoordinateSystem property is not set.");
+
+        if( location == null )
+            return new Point();
+
+        var coordinate = LocationToMapTransform.Transform(
+            new Coordinate(location.Longitude, location.Latitude));
+
+        return new Point(coordinate.X * _scaleFactor, coordinate.Y * _scaleFactor);
+    }
+
+    public override Location MapToLocation(Point point)
+    {
+        if (MapToLocationTransform == null)
+            throw new InvalidOperationException("The CoordinateSystem property is not set.");
+
+        var coordinate = MapToLocationTransform.Transform(
+            new Coordinate(point.X / _scaleFactor, point.Y / _scaleFactor));
+
+        return new Location(coordinate.Y, coordinate.X);
+    }
+
+    public override string GetBboxValue(Rect rect) =>
+        string.Format(CultureInfo.InvariantCulture, _bBoxFormat!,
+                      rect.X / _scaleFactor, rect.Y / _scaleFactor,
+                      (rect.X + rect.Width) / _scaleFactor, (rect.Y + rect.Height) / _scaleFactor);
 }
