@@ -17,6 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinUiApp", "SampleApps\WinU
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLiteCache", "SQLiteCache\SQLiteCache.csproj", "{18804E75-1150-4A73-9730-3B82B36AC8B6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "external", "external", "{5E799AD3-5352-45B3-B02A-B0CB49A83BC0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "J4JLogging", "..\J4JLogging\J4JLogging\J4JLogging.csproj", "{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsAppUtilities", "..\ProgrammingUtilities\WindowsAppUtilities\WindowsAppUtilities.csproj", "{4BFAB007-B27E-427E-ACE5-2DECAF563392}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,9 +91,29 @@ Global
 		{18804E75-1150-4A73-9730-3B82B36AC8B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{18804E75-1150-4A73-9730-3B82B36AC8B6}.Release|x64.ActiveCfg = Release|Any CPU
 		{18804E75-1150-4A73-9730-3B82B36AC8B6}.Release|x64.Build.0 = Release|Any CPU
+		{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00}.Debug|x64.Build.0 = Debug|Any CPU
+		{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00}.Release|x64.ActiveCfg = Release|Any CPU
+		{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00}.Release|x64.Build.0 = Release|Any CPU
+		{4BFAB007-B27E-427E-ACE5-2DECAF563392}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BFAB007-B27E-427E-ACE5-2DECAF563392}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BFAB007-B27E-427E-ACE5-2DECAF563392}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4BFAB007-B27E-427E-ACE5-2DECAF563392}.Debug|x64.Build.0 = Debug|Any CPU
+		{4BFAB007-B27E-427E-ACE5-2DECAF563392}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BFAB007-B27E-427E-ACE5-2DECAF563392}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BFAB007-B27E-427E-ACE5-2DECAF563392}.Release|x64.ActiveCfg = Release|Any CPU
+		{4BFAB007-B27E-427E-ACE5-2DECAF563392}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9ADD0410-DCF8-4B6F-9ADA-40F1F651CC00} = {5E799AD3-5352-45B3-B02A-B0CB49A83BC0}
+		{4BFAB007-B27E-427E-ACE5-2DECAF563392} = {5E799AD3-5352-45B3-B02A-B0CB49A83BC0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ACFD708C-15C8-4FAA-A3DB-E18834BF289A}

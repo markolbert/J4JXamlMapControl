@@ -5,6 +5,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using J4JSoftware.DeusEx;
 using J4JSoftware.XamlMapControl.Projections;
 
 namespace J4JSoftware.XamlMapControl;
@@ -21,7 +22,10 @@ public class Location : IEquatable<Location>
     {
     }
 
-    public Location(double latitude, double longitude)
+    public Location(
+        double latitude,
+        double longitude
+    )
     {
         Latitude = latitude;
         Longitude = longitude;
@@ -49,23 +53,27 @@ public class Location : IEquatable<Location>
     public override string ToString() =>
         string.Format( CultureInfo.InvariantCulture, "{0:F5},{1:F5}", Latitude, Longitude );
 
-    public static Location? Parse(string? locationString)
+    public static Location? Parse( string? locationString )
     {
         Location? location = null;
 
         if( string.IsNullOrEmpty( locationString ) )
             return location;
 
-        var values = locationString.Split(new[] { ',' });
+        var values = locationString.Split( new[] { ',' } );
 
-        if (values.Length != 2)
-            throw new FormatException("Location string must be a comma-separated pair of double values.");
+        if( values.Length == 2 )
+        {
+            if( double.TryParse( values[ 0 ], NumberStyles.Float, CultureInfo.InvariantCulture, out var value1 )
+            && double.TryParse( values[ 1 ], NumberStyles.Float, CultureInfo.InvariantCulture, out var value2 ) )
+                return new Location( value1, value2 );
+        }
 
-        location = new Location(
-            double.Parse(values[0], NumberStyles.Float, CultureInfo.InvariantCulture),
-            double.Parse(values[1], NumberStyles.Float, CultureInfo.InvariantCulture));
+        J4JDeusEx.GetLogger<Location>()
+                ?.Error<string>( "Location string must be a comma-separated pair of double values (received {0})",
+                                 locationString );
 
-        return location;
+        return null;
     }
 
     /// <summary>

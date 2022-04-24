@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using J4JSoftware.DeusEx;
+using J4JSoftware.Logging;
 using J4JSoftware.XamlMapControl.Projections;
 
 namespace J4JSoftware.XamlMapControl;
@@ -21,12 +23,16 @@ public class LocationCollection : List<Location>
     {
     }
 
-    public LocationCollection(IEnumerable<Location> locations)
+    public LocationCollection(
+        IEnumerable<Location> locations
+        )
         : base(locations)
     {
     }
 
-    public LocationCollection(params Location[] locations)
+    public LocationCollection(
+        params Location[] locations
+        )
         : base(locations)
     {
     }
@@ -52,7 +58,7 @@ public class LocationCollection : List<Location>
         Add(new Location(latitude, longitude));
     }
 
-    public static LocationCollection Parse(string s)
+    public static LocationCollection Parse(string s )
     {
         var strings = s.Split(new char[] { ' ', ';' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -73,7 +79,11 @@ public class LocationCollection : List<Location>
     ///
     /// See https://en.wikipedia.org/wiki/Great-circle_navigation
     /// </summary>
-    public static LocationCollection OrthodromeLocations(Location location1, Location location2, double resolution = 1d)
+    public static LocationCollection OrthodromeLocations(
+        Location location1, 
+        Location location2,
+        IJ4JLogger logger,
+        double resolution = 1d )
     {
         if (resolution <= 0d)
             throw new ArgumentOutOfRangeException(
@@ -97,7 +107,7 @@ public class LocationCollection : List<Location>
 
         var n = (int)Math.Ceiling(s12 / resolution * 180d / Math.PI); // s12 in radians
 
-        var locations = new LocationCollection(new Location(location1.Latitude, location1.Longitude));
+        var locations = new LocationCollection( new Location( location1.Latitude, location1.Longitude ) );
 
         if (n > 1)
         {
